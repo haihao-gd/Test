@@ -3,9 +3,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -17,7 +15,7 @@ using ZeroStack.EventBus.Extensions;
 
 namespace ZeroStack.EventBus.RabbitMQ
 {
-    public class EventBusRabbitMQ: IEventBus, IDisposable
+    public class EventBusRabbitMQ : IEventBus, IDisposable
     {
         const string ExchangeName = "my_event_bus";
 

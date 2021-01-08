@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZeroStack.EventBus.Abstractions;
 using ZeroStack.EventBus.Events;
 
 namespace ZeroStack.EventBus
 {
-    public class InMemoryEventBusSubscriptionsManager: IEventBusSubscriptionsManager
+    public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManager
     {
         private readonly Dictionary<string, List<SubscriptionInfo>> _handlers;
 
