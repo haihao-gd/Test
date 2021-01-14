@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate;
 
 namespace ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate
 {
@@ -10,6 +11,12 @@ namespace ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate
         public double? Longitude { get; set; }
 
         public override string ToString() => $"{Latitude},{Longitude}";
+
+        public void Deconstruct(out double? latitude, out double? longitude)
+        {
+            latitude = Latitude;
+            longitude = Longitude;
+        }
 
         public static implicit operator string(GeoCoordinate geo) => geo.ToString();
 
