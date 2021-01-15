@@ -66,7 +66,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    ProjectId1 = table.Column<int>(type: "int", nullable: true),
                     ParentId = table.Column<int>(type: "int", nullable: true),
                     Remark = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Sorting = table.Column<int>(type: "int", nullable: true),
@@ -87,12 +86,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProjectGroups_Projects_ProjectId1",
-                        column: x => x.ProjectId1,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,11 +149,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                 name: "IX_ProjectGroups_ProjectId",
                 table: "ProjectGroups",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProjectGroups_ProjectId1",
-                table: "ProjectGroups",
-                column: "ProjectId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

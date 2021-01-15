@@ -10,7 +10,7 @@ using ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks;
 namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 {
     [DbContext(typeof(DeviceCenterDbContext))]
-    [Migration("20210114135231_InitialCreate")]
+    [Migration("20210115142746_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.Device", b =>
                 {
@@ -141,9 +141,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProjectId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Remark")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -156,8 +153,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                     b.HasIndex("ParentId");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectId1");
 
                     b.ToTable("ProjectGroups");
                 });
@@ -222,15 +217,11 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
-                    b.HasOne("ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate.Project", null)
+                    b.HasOne("ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate.Project", "Project")
                         .WithMany("Groups")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId1");
 
                     b.Navigation("Parent");
 

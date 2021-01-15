@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using ZeroStack.DeviceCenter.Infrastructure.Constants;
 using System.Reflection;
 using ZeroStack.DeviceCenter.Domain.Repositories;
+using ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate;
+using ZeroStack.DeviceCenter.Infrastructure.Repositories;
 
 namespace ZeroStack.DeviceCenter.Infrastructure
 {
@@ -42,6 +44,8 @@ namespace ZeroStack.DeviceCenter.Infrastructure
 
             services.AddTransient(typeof(IRepository<>), typeof(DeviceCenterEfCoreRepository<>));
             services.AddTransient(typeof(IRepository<,>), typeof(DeviceCenterEfCoreRepository<,>));
+
+            services.AddTransient<IProductRepository, ProductRepository>();
 
             return services;
         }
