@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ZeroStack.DeviceCenter.API.Constants;
 using ZeroStack.DeviceCenter.Domain;
 using ZeroStack.DeviceCenter.Domain.Repositories;
 using ZeroStack.DeviceCenter.Infrastructure;
@@ -24,6 +25,8 @@ namespace ZeroStack.DeviceCenter.API
         {
             services.AddDomainLayer().AddInfrastructureLayer(Configuration);
 
+            services.AddTenantMiddleware();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -34,6 +37,8 @@ namespace ZeroStack.DeviceCenter.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseTenantMiddleware();
+
             using (IServiceScope serviceScope = app.ApplicationServices.CreateScope())
             {
                 var dataSeedProviders = serviceScope.ServiceProvider.GetServices<IDataSeedProvider>();
