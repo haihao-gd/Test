@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate;
 
 namespace ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate
 {

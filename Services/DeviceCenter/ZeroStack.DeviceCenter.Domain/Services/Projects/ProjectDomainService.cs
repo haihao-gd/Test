@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate;
 using ZeroStack.DeviceCenter.Domain.Constants;
+using ZeroStack.DeviceCenter.Domain.Events.Projects;
 using ZeroStack.DeviceCenter.Domain.Repositories;
 using ZeroStack.DeviceCenter.Domain.Specifications;
 
@@ -32,6 +33,8 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Projects
 
         public async Task DeleteAsync(Project entity, CancellationToken cancellationToken = default)
         {
+            entity.AddDomainEvent(new ProjectDeletedDomainEvent { ProjectId = entity.Id, ProjectName = entity.Name });
+
             await _projectRepository.DeleteAsync(entity, true, cancellationToken);
         }
 

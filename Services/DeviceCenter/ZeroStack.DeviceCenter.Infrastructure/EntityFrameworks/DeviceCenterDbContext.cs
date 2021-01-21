@@ -1,29 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate;
-using ZeroStack.DeviceCenter.Domain.UnitOfWork;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Metadata;
 using ZeroStack.DeviceCenter.Domain.Entities;
-using System.Linq;
+using ZeroStack.DeviceCenter.Domain.UnitOfWork;
 using ZeroStack.DeviceCenter.Infrastructure.EntityConfigurations.Tenants;
 
 namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
 {
     public class DeviceCenterDbContext : DbContext, IUnitOfWork
     {
-        public DeviceCenterDbContext(DbContextOptions<DeviceCenterDbContext> options) : base(options)
-        {
+        private readonly IMediator _mediator;
 
-        }
+        public DeviceCenterDbContext(DbContextOptions<DeviceCenterDbContext> options) : base(options) => _mediator = this.GetInfrastructure().GetService<IMediator>() ?? new NullMediator();
 
         async Task IUnitOfWork.SaveChangesAsync(CancellationToken cancellationToken) => await base.SaveChangesAsync(cancellationToken);
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        public async override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             var deletedEntries = ChangeTracker.Entries().Where(entry => entry.State == EntityState.Deleted && entry.Entity is ISoftDelete);
 
@@ -34,7 +32,21 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
                 ((ISoftDelete)entityEntry.Entity).IsDeleted = true;
             });
 
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            await DispatchDomainEventsAsync(cancellationToken);
+
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private async Task DispatchDomainEventsAsync(CancellationToken cancellationToken = default)
+        {
+            var domainEntities = ChangeTracker.Entries<BaseEntity>().OfType<IDomainEvents>();
+            var domainEvents = domainEntities.SelectMany(x => x.DomainEvents).ToList();
+            domainEntities.ToList().ForEach(entity => entity.ClearDomainEvents());
+
+            foreach (var domainEvent in domainEvents)
+            {
+                await _mediator.Publish(domainEvent, cancellationToken);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

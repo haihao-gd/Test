@@ -3,9 +3,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
-using System.Reflection;
 using ZeroStack.DeviceCenter.Domain.Repositories;
-using ZeroStack.DeviceCenter.Domain.Services.Products;
 using ZeroStack.DeviceCenter.Domain.Services.Projects;
 
 namespace ZeroStack.DeviceCenter.Domain

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate;
+using ZeroStack.DeviceCenter.Domain.Events.Products;
 using ZeroStack.DeviceCenter.Domain.Repositories;
 
 namespace ZeroStack.DeviceCenter.Domain.Services.Products
@@ -25,6 +23,7 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Products
                 {
                     var product = new Product { Name = $"Product{i}" };
                     await _productRepository.InsertAsync(product, true);
+                    product.AddDomainEvent(new ProductCreatedDomainEvent(product));
                 }
             }
         }
