@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ZeroStack.DeviceCenter.Infrastructure.EntityConfigurations.Tenants
+namespace ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate
 {
     public class CurrentTenant : ICurrentTenant
     {

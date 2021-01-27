@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZeroStack.DeviceCenter.Infrastructure.EntityConfigurations.Tenants
+namespace ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate
 {
     public interface ICurrentTenant
     {

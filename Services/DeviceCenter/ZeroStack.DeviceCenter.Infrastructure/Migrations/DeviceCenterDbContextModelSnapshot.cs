@@ -155,6 +155,43 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                     b.ToTable("ProjectGroups");
                 });
 
+            modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate.Tenant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Tenants");
+                });
+
+            modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate.TenantConnectionString", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.HasKey("TenantId", "Name");
+
+                    b.ToTable("TenantConnectionStrings");
+                });
+
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.Device", b =>
                 {
                     b.HasOne("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.Product", "Product")
@@ -226,6 +263,15 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate.TenantConnectionString", b =>
+                {
+                    b.HasOne("ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate.Tenant", null)
+                        .WithMany("ConnectionStrings")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.Device", b =>
                 {
                     b.Navigation("Tags");
@@ -244,6 +290,11 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate.ProjectGroup", b =>
                 {
                     b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate.Tenant", b =>
+                {
+                    b.Navigation("ConnectionStrings");
                 });
 #pragma warning restore 612, 618
         }

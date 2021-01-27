@@ -7,9 +7,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate;
 using ZeroStack.DeviceCenter.Domain.Entities;
 using ZeroStack.DeviceCenter.Domain.UnitOfWork;
-using ZeroStack.DeviceCenter.Infrastructure.EntityConfigurations.Tenants;
 
 namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
 {
