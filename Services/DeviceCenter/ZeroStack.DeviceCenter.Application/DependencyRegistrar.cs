@@ -20,6 +20,7 @@ namespace ZeroStack.DeviceCenter.Application
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddApplicationServices();
 
+            ValidatorOptions.Global.LanguageManager = new Extensions.Validators.CustomLanguageManager();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;

@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
 using Microsoft.OpenApi.Models;
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using ZeroStack.DeviceCenter.API.Constants;
 using ZeroStack.DeviceCenter.Application;
 using ZeroStack.DeviceCenter.Domain;
@@ -26,11 +30,13 @@ namespace ZeroStack.DeviceCenter.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
             services.AddDomainLayer().AddInfrastructureLayer(Configuration).AddApplicationLayer();
 
             services.AddTenantMiddleware();
 
-            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies())); ;
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies())).AddDataAnnotationsLocalization();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZeroStack.DeviceCenter.API", Version = "v1" });
@@ -40,7 +46,48 @@ namespace ZeroStack.DeviceCenter.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            string[] supportedCultures = new[] { "zh-CN", "en-US" };
+            RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
+            {
+                ApplyCurrentCultureToResponseHeaders = false
+            };
+            localizationOptions.SetDefaultCulture(supportedCultures.First()).AddSupportedCultures(supportedCultures).AddSupportedUICultures(supportedCultures);
+            app.UseRequestLocalization(localizationOptions);
+
             app.UseTenantMiddleware();
+
+            IStringLocalizerFactory? localizerFactory = app.ApplicationServices.GetService<IStringLocalizerFactory>();
+
+            FluentValidation.ValidatorOptions.Global.DisplayNameResolver = (type, memberInfo, lambdaExpression) =>
+            {
+                string? displayName = string.Empty;
+
+                DisplayAttribute? displayColumnAttribute = memberInfo.GetCustomAttributes(true).OfType<DisplayAttribute>().FirstOrDefault();
+
+                if (displayColumnAttribute is not null)
+                {
+                    displayName = displayColumnAttribute.Name;
+                }
+
+                DisplayNameAttribute? displayNameAttribute = memberInfo.GetCustomAttributes(true).OfType<DisplayNameAttribute>().FirstOrDefault();
+
+                if (displayNameAttribute is not null)
+                {
+                    displayName = displayNameAttribute.DisplayName;
+                }
+
+                if (!string.IsNullOrWhiteSpace(displayName) && localizerFactory is not null)
+                {
+                    return localizerFactory.Create(type)[displayName];
+                }
+
+                if (!string.IsNullOrWhiteSpace(displayName))
+                {
+                    return displayName;
+                }
+
+                return memberInfo.Name;
+            };
 
             using (IServiceScope serviceScope = app.ApplicationServices.CreateScope())
             {
