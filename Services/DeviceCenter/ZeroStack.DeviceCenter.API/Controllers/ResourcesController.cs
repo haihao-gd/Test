@@ -8,7 +8,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
     [ApiController]
     public class ResourcesController : ControllerBase
     {
-        private IStringLocalizerFactory _localizerFactory;
+        private readonly IStringLocalizerFactory _localizerFactory;
 
         public ResourcesController(IStringLocalizerFactory localizerFactory)
         {
