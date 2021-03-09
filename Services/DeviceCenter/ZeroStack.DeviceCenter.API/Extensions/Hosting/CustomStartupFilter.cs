@@ -68,6 +68,8 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
                 {
                     dataSeedProvider.SeedAsync(serviceScope.ServiceProvider).Wait();
                 }
+
+                next(app);
             };
         }
     }
