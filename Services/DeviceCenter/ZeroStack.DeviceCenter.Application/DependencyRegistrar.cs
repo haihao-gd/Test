@@ -5,7 +5,9 @@ using System;
 using System.Reflection;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
+using ZeroStack.DeviceCenter.Application.PermissionProviders;
 using ZeroStack.DeviceCenter.Application.Services.Generics;
+using ZeroStack.DeviceCenter.Application.Services.Permissions;
 using ZeroStack.DeviceCenter.Application.Services.Products;
 using ZeroStack.DeviceCenter.Application.Services.Projects;
 
@@ -18,6 +20,7 @@ namespace ZeroStack.DeviceCenter.Application
             services.AddDomainEvents();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddApplicationServices();
+            services.AddAuthorization();
 
             ValidatorOptions.Global.LanguageManager = new Extensions.Validators.CustomLanguageManager();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -37,6 +40,14 @@ namespace ZeroStack.DeviceCenter.Application
             services.AddTransient(typeof(ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel>), typeof(ProjectApplicationService));
 
             services.AddTransient<IProductApplicationService, ProductApplicationService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddAuthorization(this IServiceCollection services)
+        {
+            services.AddSingleton<IPermissionDefinitionProvider, CustomPermissionDefinitionProvider>();
+            services.AddSingleton<IPermissionDefinitionManager, PermissionDefinitionManager>();
 
             return services;
         }

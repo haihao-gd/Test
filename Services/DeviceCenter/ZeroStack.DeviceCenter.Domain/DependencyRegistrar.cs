@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate;
@@ -16,6 +14,7 @@ namespace ZeroStack.DeviceCenter.Domain
             services.AddTransient<IProjectDomainService, ProjectDomainService>();
 
             var dataSeedProviders = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.ExportedTypes).Where(t => t.IsAssignableTo(typeof(IDataSeedProvider)) && t.IsClass);
+
             dataSeedProviders.ToList().ForEach(t => services.AddTransient(typeof(IDataSeedProvider), t));
 
             services.AddSingleton<ICurrentTenantAccessor, CurrentTenantAccessor>();
