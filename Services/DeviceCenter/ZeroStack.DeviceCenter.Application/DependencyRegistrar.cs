@@ -41,6 +41,8 @@ namespace ZeroStack.DeviceCenter.Application
 
             services.AddTransient<IProductApplicationService, ProductApplicationService>();
 
+            services.AddTransient<IPermissionApplicationService, PermissionApplicationService>();
+
             return services;
         }
 
@@ -51,8 +53,8 @@ namespace ZeroStack.DeviceCenter.Application
 
             services.AddSingleton<IPermissionDefinitionProvider, CustomPermissionDefinitionProvider>();
             services.AddSingleton<IPermissionDefinitionManager, PermissionDefinitionManager>();
-            services.AddSingleton<IPermissionValueProvider, UserPermissionValueProvider>();
-            services.AddSingleton<IPermissionValueProvider, RolePermissionValueProvider>();
+            services.AddTransient<IPermissionValueProvider, UserPermissionValueProvider>();
+            services.AddTransient<IPermissionValueProvider, RolePermissionValueProvider>();
 
             return services;
         }
