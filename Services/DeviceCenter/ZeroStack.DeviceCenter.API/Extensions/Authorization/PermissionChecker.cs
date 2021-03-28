@@ -71,11 +71,11 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Authorization
 
         public async Task<MultiplePermissionGrantResult> IsGrantedAsync([MaybeNull] ClaimsPrincipal claimsPrincipal, [NotNull] string[] names)
         {
-            MultiplePermissionGrantResult result = new MultiplePermissionGrantResult();
+            MultiplePermissionGrantResult result = new();
 
             names ??= Array.Empty<string>();
 
-            List<PermissionDefinition> permissionDefinitions = new List<PermissionDefinition>();
+            List<PermissionDefinition> permissionDefinitions = new();
 
             foreach (string name in names)
             {

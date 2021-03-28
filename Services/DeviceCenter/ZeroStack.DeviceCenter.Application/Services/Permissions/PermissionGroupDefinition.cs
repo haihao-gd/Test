@@ -10,7 +10,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
         public string? DisplayName { get; set; }
 
-        private readonly List<PermissionDefinition> _permissions = new List<PermissionDefinition>();
+        private readonly List<PermissionDefinition> _permissions = new();
 
         public IReadOnlyList<PermissionDefinition> Permissions => _permissions.ToImmutableList();
 

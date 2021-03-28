@@ -4,7 +4,7 @@ namespace ZeroStack.DeviceCenter.Domain.Specifications
 {
     public class IncludeAggregator : IIncludeAggregator
     {
-        private readonly List<string> navigationPropertyNames = new List<string>();
+        private readonly List<string> navigationPropertyNames = new();
 
         public IncludeAggregator(string? navigationPropertyName)
         {

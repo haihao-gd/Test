@@ -31,7 +31,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
             foreach (var group in _permissionDefinitionManager.GetGroups())
             {
-                PermissionGroupModel permissionGroupModel = new PermissionGroupModel
+                PermissionGroupModel permissionGroupModel = new()
                 {
                     DisplayName = _localizer[group.Name] ?? group.Name,
                     Name = group.Name,
@@ -42,7 +42,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
                 {
                     if (permission.IsEnabled && (!permission.AllowedProviders.Any() || permission.AllowedProviders.Contains(providerName)))
                     {
-                        PermissionGrantModel permissionGrantModel = new PermissionGrantModel
+                        PermissionGrantModel permissionGrantModel = new()
                         {
                             Name = permission.Name,
                             DisplayName = _localizer[permission.DisplayName ?? permission.Name] ?? permission.Name,

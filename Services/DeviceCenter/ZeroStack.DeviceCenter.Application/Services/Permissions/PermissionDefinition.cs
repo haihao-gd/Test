@@ -15,7 +15,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
         public string? DisplayName { get; set; }
 
-        private readonly List<PermissionDefinition> _children = new List<PermissionDefinition>();
+        private readonly List<PermissionDefinition> _children = new();
 
         public IReadOnlyList<PermissionDefinition> Children => _children.ToImmutableList();
 

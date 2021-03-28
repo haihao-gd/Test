@@ -18,7 +18,7 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
             return app =>
             {
                 string[] supportedCultures = new[] { "zh-CN", "en-US" };
-                RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
+                RequestLocalizationOptions localizationOptions = new()
                 {
                     ApplyCurrentCultureToResponseHeaders = false
                 };
