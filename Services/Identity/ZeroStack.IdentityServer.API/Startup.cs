@@ -8,7 +8,10 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
 using System.Reflection;
+using ZeroStack.IdentityServer.API.Infrastructure;
+using ZeroStack.IdentityServer.API.Infrastructure.Aliyun;
 using ZeroStack.IdentityServer.API.Models;
+using ZeroStack.IdentityServer.API.Services;
 
 namespace ZeroStack.IdentityServer.API
 {
@@ -67,6 +70,13 @@ namespace ZeroStack.IdentityServer.API
                        sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                    });
                });
+
+            services.Configure<AlibabaCloudOptions>(Configuration.GetSection("AlibabaCloud"));
+
+            services.AddTransient<AliyunAuthHandler>();
+            services.AddHttpClient("aliyun").AddHttpMessageHandler<AliyunAuthHandler>();
+
+            services.AddTransient<IEmailSender, AuthMessageSender>().AddTransient<ISmsSender, AuthMessageSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
