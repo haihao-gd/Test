@@ -51,7 +51,7 @@ namespace ZeroStack.IdentityServer.API
             }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.AddIdentityServer().AddAspNetIdentity<ApplicationUser>()
-               .AddDeveloperSigningCredential()
+               .AddSigningCredential(Certificates.Certificate.Get())
                .AddConfigurationStore(options =>
                {
                    options.ConfigureDbContext = builder => builder.UseSqlServer(Configuration.GetConnectionString("Default"), sqlOptions =>

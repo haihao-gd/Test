@@ -33,4 +33,4 @@ Update-Database -Context ApplicationDbContext -Project ZeroStack.IdentityServer.
 ## Creates SSL Certificate
 
 makecert.exe -r -n "CN=idsrvtest" -pe -sv idsrvtest.pvk -a sha1 -len 2048 -b 11/11/2020 -e 11/11/2088 idsrvtest.cer
-pvk2pfx.exe -pvk idsrvtest.pvk -spc idsrvtest.cer -pfx idsrvtest.pfx
+pvk2pfx.exe -pvk idsrvtest.pvk -spc idsrvtest.cer -pfx idsrvtest.pfx -pi idsrvtest
