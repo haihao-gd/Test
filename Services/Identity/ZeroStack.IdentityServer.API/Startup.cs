@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -75,6 +76,39 @@ namespace ZeroStack.IdentityServer.API
 
             services.AddTransient<AliyunAuthHandler>();
             services.AddHttpClient("aliyun").AddHttpMessageHandler<AliyunAuthHandler>();
+
+            services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
+            {
+                microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+                microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+                microsoftOptions.RemoteAuthenticationTimeout = TimeSpan.FromDays(15);
+                microsoftOptions.CorrelationCookie.SameSite = SameSiteMode.Lax;
+            }).AddQQ(qqOptions =>
+            {
+                qqOptions.ClientId = Configuration["Authentication:TencentQQ:AppID"];
+                qqOptions.ClientSecret = Configuration["Authentication:TencentQQ:AppKey"];
+                qqOptions.RemoteAuthenticationTimeout = TimeSpan.FromDays(15);
+                qqOptions.CorrelationCookie.SameSite = SameSiteMode.Lax;
+            }).AddGitHub(gitHubOptions =>
+            {
+                gitHubOptions.ClientId = Configuration["Authentication:GitHub:ClientID"];
+                gitHubOptions.ClientSecret = Configuration["Authentication:GitHub:ClientSecret"];
+                gitHubOptions.RemoteAuthenticationTimeout = TimeSpan.FromDays(15);
+                gitHubOptions.CorrelationCookie.SameSite = SameSiteMode.Lax;
+            }).AddWeibo("Weibo", "Î¢²©", weiboOptions =>
+            {
+                weiboOptions.ClientId = Configuration["Authentication:Weibo:AppKey"];
+                weiboOptions.ClientSecret = Configuration["Authentication:Weibo:AppSecret"];
+                weiboOptions.UserEmailsEndpoint = string.Empty;
+                weiboOptions.RemoteAuthenticationTimeout = TimeSpan.FromDays(15);
+                weiboOptions.CorrelationCookie.SameSite = SameSiteMode.Lax;
+            }).AddWeChat("WeChat", "Î¢ÐÅ", weChatOptions =>
+            {
+                weChatOptions.ClientId = Configuration["Authentication:WeChat:AppID"];
+                weChatOptions.ClientSecret = Configuration["Authentication:WeChat:AppSecret"];
+                weChatOptions.RemoteAuthenticationTimeout = TimeSpan.FromDays(15);
+                weChatOptions.CorrelationCookie.SameSite = SameSiteMode.Lax;
+            }); ;
 
             services.AddTransient<IEmailSender, AuthMessageSender>().AddTransient<ISmsSender, AuthMessageSender>();
         }

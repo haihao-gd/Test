@@ -283,6 +283,67 @@ namespace ZeroStack.IdentityServer.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string? returnUrl = "~/")
+        {
+            // validate returnUrl - either it is a valid OIDC URL or back to a local page
+            if (Url.IsLocalUrl(returnUrl) == false && !_interactionService.IsValidReturnUrl(returnUrl))
+            {
+                // user might have clicked on a malicious link - should be logged
+                throw new Exception("invalid return url");
+            }
+
+            // Request a redirect to the external login provider.
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+            return Challenge(properties, provider);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                return View(nameof(Login));
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            if (info is null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            ApplicationUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+            if (user is not null)
+            {
+                await _signInManager.SignInAsync(user, true);
+            }
+
+            // Sign in the user with this external login provider if the user already has a login.
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+
+            if (result.Succeeded && returnUrl is not null && user is not null)
+            {
+                // Update any authentication tokens if login succeeded
+                await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+
+                _logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
+
+                return RedirectToLocal(returnUrl);
+            }
+
+            return View(viewName: nameof(Register));
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> SendCode([System.ComponentModel.DataAnnotations.Phone] string phoneNumber)
         {
             if (!ModelState.IsValid)
