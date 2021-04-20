@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
@@ -9,6 +10,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "role2")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductApplicationService _productService;
@@ -37,6 +39,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         public async Task Delete(Guid id)
         {
             await _productService.DeleteAsync(id);

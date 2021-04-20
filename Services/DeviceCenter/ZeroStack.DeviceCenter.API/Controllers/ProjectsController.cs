@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
@@ -8,6 +9,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="role1")]
     public class ProjectsController : ControllerBase
     {
         private readonly ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> _crudService;
@@ -26,6 +28,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 
         // GET api/<ProjectsController>/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ProjectGetResponseModel> Get(int id)
         {
             return await _crudService.GetAsync(id);

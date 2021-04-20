@@ -108,7 +108,13 @@ namespace ZeroStack.IdentityServer.API
                 weChatOptions.ClientSecret = Configuration["Authentication:WeChat:AppSecret"];
                 weChatOptions.RemoteAuthenticationTimeout = TimeSpan.FromDays(15);
                 weChatOptions.CorrelationCookie.SameSite = SameSiteMode.Lax;
-            }); ;
+            });
+
+            services.AddCors(options =>
+            {
+                string[] allowedOrigins = Configuration.GetSection("AllowedOrigins").Get<string[]>();
+                options.AddDefaultPolicy(builder => builder.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+            });
 
             services.AddTransient<IEmailSender, AuthMessageSender>().AddTransient<ISmsSender, AuthMessageSender>();
         }
@@ -138,6 +144,8 @@ namespace ZeroStack.IdentityServer.API
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseCors();
 
             app.UseIdentityServer();
 

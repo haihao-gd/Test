@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using ZeroStack.DeviceCenter.API.Infrastructure.Swagger;
 
 namespace ZeroStack.DeviceCenter.API
 {
@@ -23,6 +26,27 @@ namespace ZeroStack.DeviceCenter.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Device Center API", Version = "v1" });
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                string identityServer = Configuration.GetValue<string>("IdentityServer:AuthorizationUrl");
+
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        AuthorizationCode = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri($"{identityServer}/connect/authorize"),
+                            TokenUrl = new Uri($"{identityServer}/connect/token"),
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { "openid", "Your user identifier" },
+                                { "devicecenter", "Device Center API" }
+                            }
+                        }
+                    }
+                });
             });
         }
 
@@ -32,20 +56,26 @@ namespace ZeroStack.DeviceCenter.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Device Center API v1");
-                    c.DocumentTitle = "Device Center API Document";
-                    c.IndexStream = () => GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}.Infrastructure.Swagger.Index.html");
-                });
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Device Center API v1");
+                c.DocumentTitle = "Device Center API Document";
+                c.IndexStream = () => GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}.Infrastructure.Swagger.Index.html");
+
+                c.OAuthClientId("devicecenterswagger");
+                c.OAuthClientSecret("secret");
+                c.OAuthAppName("Device Center Swagger");
+                c.OAuthUsePkce();
+            });
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication().UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
