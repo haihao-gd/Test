@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Authorization
             if (permission is not null)
             {
                 var policyBuilder = new AuthorizationPolicyBuilder(Array.Empty<string>());
-                policyBuilder.Requirements.Add(new PermissionRequirement(policyName));
+                policyBuilder.Requirements.Add(new OperationAuthorizationRequirement { Name = policyName });
 
                 return policyBuilder.Build();
             }

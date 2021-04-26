@@ -23,7 +23,9 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
             var permissionNames = _permissionDefinitionManager.GetPermissions().Where(p => !p.AllowedProviders.Any() || p.AllowedProviders.Contains(RolePermissionValueProvider.ProviderName)).Select(p => p.Name).ToArray();
             var permissionModels = Array.ConvertAll(permissionNames, pn => new PermissionUpdateRequestModel { Name = pn, IsGranted = true });
 
-            await _permissionService.UpdateAsync(RolePermissionValueProvider.ProviderName, "admin", permissionModels);
+            await _permissionService.UpdateAsync(RolePermissionValueProvider.ProviderName, "role1", permissionModels);
+            await _permissionService.UpdateAsync(UserPermissionValueProvider.ProviderName, "user3", permissionModels);
+
         }
     }
 }

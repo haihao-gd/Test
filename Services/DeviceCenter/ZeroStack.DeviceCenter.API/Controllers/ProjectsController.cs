@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
+using ZeroStack.DeviceCenter.Application.PermissionProviders;
 using ZeroStack.DeviceCenter.Application.Services.Generics;
 
 namespace ZeroStack.DeviceCenter.API.Controllers
@@ -21,6 +22,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 
         // GET: api/<ProjectsController>
         [HttpGet]
+        [Authorize(ProjectPermissions.Projects.Default)]
         public async Task<PagedResponseModel<ProjectGetResponseModel>> Get([FromQuery] PagedRequestModel model)
         {
             return await _crudService.GetListAsync(model);
@@ -28,7 +30,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 
         // GET api/<ProjectsController>/5
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(ProjectPermissions.Projects.Default)]
         public async Task<ProjectGetResponseModel> Get(int id)
         {
             return await _crudService.GetAsync(id);
@@ -36,6 +38,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 
         // POST api/<ProjectsController>
         [HttpPost]
+        [Authorize(ProjectPermissions.Projects.Create)]
         public async Task<ProjectGetResponseModel> Post([FromBody] ProjectCreateOrUpdateRequestModel value)
         {
             return await _crudService.CreateAsync(value);
@@ -43,6 +46,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 
         // PUT api/<ProjectsController>/5
         [HttpPut("{id}")]
+        [Authorize(ProjectPermissions.Projects.Edit)]
         public async Task<ProjectGetResponseModel> Put(int id, [FromBody] ProjectCreateOrUpdateRequestModel value)
         {
             value.Id = id;
@@ -51,6 +55,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 
         // DELETE api/<ProjectsController>/5
         [HttpDelete("{id}")]
+        [Authorize(ProjectPermissions.Projects.Delete)]
         public async Task Delete(int id)
         {
             await _crudService.DeleteAsync(id);

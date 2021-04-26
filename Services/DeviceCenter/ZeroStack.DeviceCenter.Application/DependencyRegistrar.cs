@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using System.Reflection;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
@@ -48,13 +49,16 @@ namespace ZeroStack.DeviceCenter.Application
 
         private static IServiceCollection AddAuthorization(this IServiceCollection services)
         {
-            services.AddDistributedMemoryCache();
-            services.AddTransient<IPermissionStore, PermissionStore>();
-
-            services.AddSingleton<IPermissionDefinitionProvider, CustomPermissionDefinitionProvider>();
+            services.AddDistributedMemoryCache().AddTransient<IPermissionStore, PermissionStore>();
             services.AddSingleton<IPermissionDefinitionManager, PermissionDefinitionManager>();
-            services.AddTransient<IPermissionValueProvider, UserPermissionValueProvider>();
-            services.AddTransient<IPermissionValueProvider, RolePermissionValueProvider>();
+
+            var exportedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.ExportedTypes).Where(t => t.IsClass);
+
+            var permissionDefinitionProviders = exportedTypes.Where(t => t.IsAssignableTo(typeof(IPermissionDefinitionProvider)));
+            permissionDefinitionProviders.ToList().ForEach(t => services.AddSingleton(typeof(IPermissionDefinitionProvider), t));
+
+            var permissionValueProviders = exportedTypes.Where(t => t.IsAssignableTo(typeof(IPermissionValueProvider)));
+            permissionValueProviders.ToList().ForEach(t => services.AddTransient(typeof(IPermissionValueProvider), t));
 
             return services;
         }

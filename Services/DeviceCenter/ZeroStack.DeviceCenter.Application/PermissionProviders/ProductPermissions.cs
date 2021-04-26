@@ -1,8 +1,14 @@
-﻿namespace ZeroStack.DeviceCenter.Application.PermissionProviders
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ZeroStack.DeviceCenter.Application.PermissionProviders
 {
-    public static class CustomPermissions
+    public static class ProductPermissions
     {
-        public const string GroupName = "ProductStore";
+        public const string GroupName = "ProductManager";
 
         public static class Products
         {

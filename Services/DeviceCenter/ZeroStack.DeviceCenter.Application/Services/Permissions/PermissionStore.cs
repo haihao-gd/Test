@@ -43,7 +43,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
                 throw new ArgumentNullException(nameof(names));
             }
 
-            MultiplePermissionGrantResult result = new MultiplePermissionGrantResult();
+            MultiplePermissionGrantResult result = new();
 
             if (names.Length == 1)
             {
@@ -107,7 +107,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
                 }
             }
 
-            List<Task> setCacheItemTasks = new List<Task>();
+            List<Task> setCacheItemTasks = new();
 
             foreach ((string Key, bool IsGranted) in cacheItems)
             {
@@ -123,11 +123,11 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
         protected virtual async Task<List<(string Key, bool IsGranted)>> GetCacheItemsAsync(string[] names, string providerName, string providerKey)
         {
-            var cacheKeys = names.Select(x => string.Format(CacheKeyFormat, x, providerName, providerKey)).ToList();
+            var cacheKeys = names.Select(x => string.Format(CacheKeyFormat, providerName, providerKey, x)).ToList();
 
             _logger.LogDebug($"PermissionStore.GetCacheItemAsync: {string.Join(",", cacheKeys)}");
 
-            List<Task<(string key, string value)>> getCacheItemTasks = new List<Task<(string, string)>>();
+            List<Task<(string key, string value)>> getCacheItemTasks = new();
 
             foreach (string cacheKey in cacheKeys)
             {
@@ -159,7 +159,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
             _logger.LogDebug($"Setting the cache items. Count: {permissions.Count}");
 
-            var cacheItems = new List<(string Key, bool IsGranted)>();
+            List<(string Key, bool IsGranted)>? cacheItems = new();
 
             foreach (PermissionDefinition? permission in permissions)
             {
@@ -167,7 +167,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
                 cacheItems.Add((string.Format(CacheKeyFormat, providerName, providerKey, permission.Name), isGranted));
             }
 
-            List<Task> setCacheItemTasks = new List<Task>();
+            List<Task> setCacheItemTasks = new();
 
             foreach ((string Key, bool IsGranted) in cacheItems)
             {
