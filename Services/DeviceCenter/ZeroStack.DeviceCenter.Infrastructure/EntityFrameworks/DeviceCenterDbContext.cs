@@ -39,7 +39,8 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
 
         private async Task DispatchDomainEventsAsync(CancellationToken cancellationToken = default)
         {
-            var domainEntities = ChangeTracker.Entries<BaseEntity>().OfType<IDomainEvents>();
+            // var domainEntities = ChangeTracker.Entries().Select(e => e.Entity).OfType<IDomainEvents>();
+            var domainEntities = ChangeTracker.Entries<IDomainEvents>().Select(e => e.Entity);
             var domainEvents = domainEntities.SelectMany(x => x.DomainEvents).ToList();
             domainEntities.ToList().ForEach(entity => entity.ClearDomainEvents());
 
