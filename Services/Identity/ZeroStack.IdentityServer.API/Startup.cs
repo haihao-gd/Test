@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using ZeroStack.IdentityServer.API.Infrastructure;
 using ZeroStack.IdentityServer.API.Infrastructure.Aliyun;
+using ZeroStack.IdentityServer.API.Infrastructure.Tenants;
 using ZeroStack.IdentityServer.API.Models;
 using ZeroStack.IdentityServer.API.Services;
 
@@ -49,7 +50,8 @@ namespace ZeroStack.IdentityServer.API
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 3;
                 options.Password.RequireUppercase = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders().AddClaimsPrincipalFactory<CustomUserClaimsPrincipalFactory>();
 
             services.AddIdentityServer().AddAspNetIdentity<ApplicationUser>()
                .AddSigningCredential(Certificates.Certificate.Get())
@@ -70,7 +72,7 @@ namespace ZeroStack.IdentityServer.API
                        sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
                        sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                    });
-               });
+               }).AddProfileService<IdentityProfileService>();
 
             services.Configure<AlibabaCloudOptions>(Configuration.GetSection("AlibabaCloud"));
 

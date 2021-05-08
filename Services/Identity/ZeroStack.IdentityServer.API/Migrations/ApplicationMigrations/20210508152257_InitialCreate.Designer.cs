@@ -10,7 +10,7 @@ using ZeroStack.IdentityServer.API.Models;
 namespace ZeroStack.IdentityServer.API.Migrations.ApplicationMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210322135922_InitialCreate")]
+    [Migration("20210508152257_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,9 @@ namespace ZeroStack.IdentityServer.API.Migrations.ApplicationMigrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

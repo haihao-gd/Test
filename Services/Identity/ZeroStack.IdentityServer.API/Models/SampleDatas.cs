@@ -1,9 +1,11 @@
 ﻿using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using ZeroStack.IdentityServer.API.Infrastructure.Tenants;
 
 namespace ZeroStack.IdentityServer.API.Models
 {
@@ -37,9 +39,9 @@ namespace ZeroStack.IdentityServer.API.Models
 
         public static IEnumerable<ApiScope> ApiScopes => new List<ApiScope>
         {
-            new ApiScope("openapi", "All open web api", new []{ JwtClaimTypes.Role, JwtClaimTypes.Name}),
-            new ApiScope("identityserver", "Identity server api", new []{ JwtClaimTypes.Role, JwtClaimTypes.Name}),
-            new ApiScope("devicecenter", "Device center api", new []{ JwtClaimTypes.Role, JwtClaimTypes.Name})
+            new ApiScope("openapi", "All open web api", new []{ JwtClaimTypes.Role, TenantClaimTypes.TenantId, JwtClaimTypes.Name}),
+            new ApiScope("identityserver", "Identity server api", new []{ JwtClaimTypes.Role, TenantClaimTypes.TenantId, JwtClaimTypes.Name}),
+            new ApiScope("devicecenter", "Device center api", new []{ JwtClaimTypes.Role, TenantClaimTypes.TenantId,JwtClaimTypes.Name})
         };
 
         public static IEnumerable<Client> Clients => new List<Client>
@@ -138,25 +140,25 @@ namespace ZeroStack.IdentityServer.API.Models
             }
         };
 
-        public static IEnumerable<(int UserId, string UserName, string Password, string PhoneNumber, string Email, IEnumerable<Claim> Claims)> Users()
+        public static IEnumerable<(int UserId, string UserName, string Password, string PhoneNumber, string Email, Guid? TenantId, IEnumerable<Claim> Claims)> Users()
         {
-            var result = new List<(int UserId, string UserName, string Password, string PhoneNumber, string Email, IEnumerable<Claim> Claims)>
+            var result = new List<(int UserId, string UserName, string Password, string PhoneNumber, string Email, Guid? TenantId, IEnumerable<Claim> Claims)>
             {
-                (UserId:1, UserName:"user1", Password: "user1", PhoneNumber:"13789685636", Email:"user1@xcode.me", new Claim[]
+                (UserId:1, UserName:"user1", Password: "user1", PhoneNumber:"13789685636", Email:"user1@xcode.me",null, new Claim[]
                 {
                     new(JwtClaimTypes.Gender, "male", ClaimValueTypes.String),
                     new(JwtClaimTypes.BirthDate, "1992-11-10", ClaimValueTypes.Date),
                     new(JwtClaimTypes.Role, "role1", ClaimValueTypes.String)
                 }),
 
-                (UserId:2, UserName:"user2", Password: "user2", PhoneNumber:"18965636598", Email:"user2@xcode.me", new Claim[]
+                (UserId:2, UserName:"user2", Password: "user2", PhoneNumber:"18965636598", Email:"user2@xcode.me",new Guid("F30E402B-9DE2-4B48-9FF0-C073CF499102"), new Claim[]
                 {
                     new(JwtClaimTypes.NickName, "female", ClaimValueTypes.String),
                     new(JwtClaimTypes.BirthDate, "1996-06-12", ClaimValueTypes.Date),
                     new(JwtClaimTypes.Role, "role2", ClaimValueTypes.String)
                 }),
 
-                (UserId:3, UserName:"user3", Password: "user3", PhoneNumber:"13656598653", Email:"user3@xcode.me", new Claim[]
+                (UserId:3, UserName:"user3", Password: "user3", PhoneNumber:"13656598653", Email:"user3@xcode.me",new Guid("F30E402B-9DE2-4B48-9FF0-C073CF499103"), new Claim[]
                 {
                     new(JwtClaimTypes.Gender, "male", ClaimValueTypes.String),
                     new(JwtClaimTypes.BirthDate, "1998-03-18", ClaimValueTypes.Date),
@@ -170,7 +172,7 @@ namespace ZeroStack.IdentityServer.API.Models
 
             for (int i = 5; i < 100; i++)
             {
-                result.Add((UserId: i, UserName: $"user{i}", Password: $"user{i}", PhoneNumber: $"{random.Next(130, 190)}{random.Next(10000000, 99999999)}", Email: $"{System.IO.Path.GetRandomFileName().Replace(".", string.Empty)}@xcode.me", new Claim[]
+                result.Add((UserId: i, UserName: $"user{i}", Password: $"user{i}", PhoneNumber: $"{random.Next(130, 190)}{random.Next(10000000, 99999999)}", Email: $"{System.IO.Path.GetRandomFileName().Replace(".", string.Empty)}@xcode.me", null, new Claim[]
                 {
                     new(JwtClaimTypes.Role, "IdentityManager", ClaimValueTypes.String),
                     new(JwtClaimTypes.Role, "role1", ClaimValueTypes.String),

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -93,13 +94,13 @@ namespace ZeroStack.IdentityServer.API.Models
             var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-            foreach ((int UserId, string UserName, string Password, string PhoneNumber, string Email, IEnumerable<Claim> Claims) in SampleDatas.Users())
+            foreach ((int UserId, string UserName, string Password, string PhoneNumber, string Email, Guid? TenantId, IEnumerable<Claim> Claims) in SampleDatas.Users())
             {
                 ApplicationUser createdUser = await userManager.FindByNameAsync(UserName);
 
                 if (createdUser is null)
                 {
-                    createdUser = new ApplicationUser { UserName = UserName, PhoneNumber = PhoneNumber, Email = Email };
+                    createdUser = new ApplicationUser { UserName = UserName, PhoneNumber = PhoneNumber, Email = Email, TenantId = TenantId };
                     IdentityResult result = await userManager.CreateAsync(createdUser, Password);
 
                     var userRoleClaims = Claims.Where(t => t.Type == JwtClaimTypes.Role || t.Type == ClaimTypes.Role);
