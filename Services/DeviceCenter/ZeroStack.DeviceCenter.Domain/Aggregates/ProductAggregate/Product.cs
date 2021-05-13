@@ -4,7 +4,7 @@ using ZeroStack.DeviceCenter.Domain.Entities;
 
 namespace ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate
 {
-    public class Product : BaseAggregateRoot<Guid>
+    public class Product : BaseAggregateRoot<Guid>, ISoftDelete, IMultiTenant
     {
         /// <summary>
         /// 产品名称
@@ -25,5 +25,15 @@ namespace ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate
         /// 描述信息
         /// </summary>
         public string? Remark { get; set; }
+
+        /// <summary>
+        /// 删除标记
+        /// </summary>
+        public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// 租户标识
+        /// </summary>
+        public Guid? TenantId { get; set; }
     }
 }

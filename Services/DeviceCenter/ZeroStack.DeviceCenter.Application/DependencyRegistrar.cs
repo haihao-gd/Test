@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
-using ZeroStack.DeviceCenter.Application.PermissionProviders;
 using ZeroStack.DeviceCenter.Application.Services.Generics;
 using ZeroStack.DeviceCenter.Application.Services.Permissions;
 using ZeroStack.DeviceCenter.Application.Services.Products;

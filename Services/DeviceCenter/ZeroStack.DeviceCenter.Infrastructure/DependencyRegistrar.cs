@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -25,6 +26,10 @@ namespace ZeroStack.DeviceCenter.Infrastructure
                     sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
                     sqlOptions.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
                 });
+
+                IMediator mediator = serviceProvider.GetService<IMediator>() ?? new NullMediator();
+                optionsBuilder.AddInterceptors(new CustomSaveChangesInterceptor(mediator));
+
                 optionsBuilder.UseInternalServiceProvider(serviceProvider);
             });
 
@@ -35,6 +40,9 @@ namespace ZeroStack.DeviceCenter.Infrastructure
                     sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
                     sqlOptions.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
                 });
+
+                IMediator mediator = serviceProvider.GetService<IMediator>() ?? new NullMediator();
+                optionsBuilder.AddInterceptors(new CustomSaveChangesInterceptor(mediator));
 
                 optionsBuilder.UseInternalServiceProvider(serviceProvider);
             });

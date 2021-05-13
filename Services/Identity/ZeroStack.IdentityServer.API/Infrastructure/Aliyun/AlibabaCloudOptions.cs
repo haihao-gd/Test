@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ZeroStack.IdentityServer.API.Infrastructure.Aliyun
+﻿namespace ZeroStack.IdentityServer.API.Infrastructure.Aliyun
 {
     public class AlibabaCloudOptions
     {

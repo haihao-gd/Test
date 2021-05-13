@@ -10,7 +10,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="role1")]
+    [Authorize(Roles = "role1")]
     public class ProjectsController : ControllerBase
     {
         private readonly ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> _crudService;

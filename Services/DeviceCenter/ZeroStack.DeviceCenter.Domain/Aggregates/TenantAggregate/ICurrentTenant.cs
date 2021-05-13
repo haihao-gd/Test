@@ -4,8 +4,12 @@ namespace ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate
 {
     public interface ICurrentTenant
     {
+        bool IsAvailable { get; }
+
         Guid? Id { get; }
 
-        IDisposable Change(Guid? id);
+        string? Name { get; }
+
+        IDisposable Change(Guid? id, string? name = null);
     }
 }

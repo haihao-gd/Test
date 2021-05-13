@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -33,7 +32,7 @@ namespace ZeroStack.IdentityServer.API.Infrastructure.Aliyun
                 { "SignatureNonce", Guid.NewGuid().ToString() },
                 { "SignatureVersion", "1.0" },
                 { "AccessKeyId", _alibabaCloudOptions.AccessKeyId },
-                { "Timestamp", DateTime.Now.ToUniversalTime().ToString("o")},
+                { "Timestamp", DateTime.Now.ToUniversalTime().ToString("o") },
                 { "Format", "JSON" }
             };
 

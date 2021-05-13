@@ -7,17 +7,23 @@ namespace ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate
     {
         private readonly ICurrentTenantAccessor _currentTenantAccessor;
 
+        public virtual bool IsAvailable => Id.HasValue;
+
         public CurrentTenant(ICurrentTenantAccessor currentTenantAccessor) => _currentTenantAccessor = currentTenantAccessor;
 
-        public Guid? Id => _currentTenantAccessor.TenantId;
+        public virtual Guid? Id => _currentTenantAccessor.Current?.TenantId;
 
-        public IDisposable Change(Guid? id)
+        public string? Name => _currentTenantAccessor.Current?.Name;
+
+        public IDisposable Change(Guid? id, string? name = null)
         {
-            var parentScope = _currentTenantAccessor.TenantId;
+            var parentScope = _currentTenantAccessor.Current;
+            _currentTenantAccessor.Current = new TenantInfo(id, name);
 
-            _currentTenantAccessor.TenantId = id;
-
-            return new DisposeAction(() => _currentTenantAccessor.TenantId = parentScope);
+            return new DisposeAction(() =>
+            {
+                _currentTenantAccessor.Current = parentScope;
+            });
         }
 
         public class DisposeAction : IDisposable

@@ -11,7 +11,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Generics
 
         public CrudApplicationService(IRepository<TEntity, TKey> repository, IMapper mapper) : base(repository, mapper) => Repository = repository;
 
-        protected async override Task DeleteByIdAsync(TKey id) => await Repository.DeleteAsync(id);
+        protected async override Task DeleteByIdAsync(TKey id) => await Repository.DeleteAsync(id, true);
 
         protected async override Task<TEntity> GetEntityByIdAsync(TKey id) => await Repository.GetAsync(id);
     }

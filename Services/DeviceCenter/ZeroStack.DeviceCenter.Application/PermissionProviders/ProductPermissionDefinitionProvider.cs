@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Application.Services.Permissions;
 
 namespace ZeroStack.DeviceCenter.Application.PermissionProviders

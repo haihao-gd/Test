@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using ZeroStack.DeviceCenter.API.Extensions.Tenants;
 using ZeroStack.DeviceCenter.API.Infrastructure.Swagger;
 
 namespace ZeroStack.DeviceCenter.API
@@ -48,6 +49,8 @@ namespace ZeroStack.DeviceCenter.API
                     }
                 });
             });
+
+            services.AddTenantMiddleware();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +79,8 @@ namespace ZeroStack.DeviceCenter.API
             app.UseRouting();
 
             app.UseAuthentication().UseAuthorization();
+
+            app.UseTenantMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

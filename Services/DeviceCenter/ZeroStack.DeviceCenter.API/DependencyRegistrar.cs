@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using ZeroStack.DeviceCenter.API.Constants;
 using ZeroStack.DeviceCenter.API.Extensions.Authorization;
 using ZeroStack.DeviceCenter.API.Extensions.Hosting;
 using ZeroStack.DeviceCenter.Application.Services.Permissions;
@@ -15,8 +14,6 @@ namespace ZeroStack.DeviceCenter.API
             services.AddTransient<IStartupFilter, CustomStartupFilter>();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-            services.AddTenantMiddleware();
 
             services.AddHttpContextAccessor();
 

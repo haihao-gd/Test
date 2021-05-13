@@ -6,7 +6,6 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using ZeroStack.DeviceCenter.API.Constants;
 using ZeroStack.DeviceCenter.Domain.Repositories;
 
 namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
@@ -24,8 +23,6 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
                 };
                 localizationOptions.SetDefaultCulture(supportedCultures.First()).AddSupportedCultures(supportedCultures).AddSupportedUICultures(supportedCultures);
                 app.UseRequestLocalization(localizationOptions);
-
-                app.UseTenantMiddleware();
 
                 IStringLocalizerFactory? localizerFactory = app.ApplicationServices.GetService<IStringLocalizerFactory>();
 

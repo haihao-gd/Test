@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using ZeroStack.DeviceCenter.API.Extensions.Tenants;
 
-namespace ZeroStack.DeviceCenter.API.Constants
+namespace ZeroStack.DeviceCenter.API.Extensions.Tenants
 {
     public static class TenantMiddlewareExtensions
     {

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,35 +20,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
 
         async Task IUnitOfWork.SaveChangesAsync(CancellationToken cancellationToken) => await base.SaveChangesAsync(cancellationToken);
 
-        public async override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            var deletedEntries = ChangeTracker.Entries().Where(entry => entry.State == EntityState.Deleted && entry.Entity is ISoftDelete);
-
-            deletedEntries?.ToList().ForEach(entityEntry =>
-            {
-                entityEntry.Reload();
-                entityEntry.State = EntityState.Modified;
-                ((ISoftDelete)entityEntry.Entity).IsDeleted = true;
-            });
-
-            await DispatchDomainEventsAsync(cancellationToken);
-
-            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private async Task DispatchDomainEventsAsync(CancellationToken cancellationToken = default)
-        {
-            // var domainEntities = ChangeTracker.Entries().Select(e => e.Entity).OfType<IDomainEvents>();
-            var domainEntities = ChangeTracker.Entries<IDomainEvents>().Select(e => e.Entity);
-            var domainEvents = domainEntities.SelectMany(x => x.DomainEvents).ToList();
-            domainEntities.ToList().ForEach(entity => entity.ClearDomainEvents());
-
-            foreach (var domainEvent in domainEvents)
-            {
-                await _mediator.Publish(domainEvent, cancellationToken);
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -58,12 +28,8 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
             {
                 if (entityType.ClrType.IsAssignableTo(typeof(IMultiTenant)))
                 {
-                    ICurrentTenant? currentTenant = this.GetInfrastructure().GetService<ICurrentTenant>();
-
-                    if (currentTenant?.Id is not null)
-                    {
-                        modelBuilder.Entity(entityType.ClrType).AddQueryFilter<IMultiTenant>(e => e.TenantId == currentTenant.Id);
-                    }
+                    ICurrentTenant currentTenant = this.GetService<ICurrentTenant>();
+                    modelBuilder.Entity(entityType.ClrType).AddQueryFilter<IMultiTenant>(e => e.TenantId == currentTenant.Id);
                 }
 
                 if (entityType.ClrType.IsAssignableTo(typeof(ISoftDelete)))

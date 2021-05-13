@@ -1,12 +1,13 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 
 namespace ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate
 {
     public class CurrentTenantAccessor : ICurrentTenantAccessor
     {
-        private readonly AsyncLocal<Guid?> _currentScope = new();
+        private readonly AsyncLocal<TenantInfo?> _currentScope = new();
 
-        public Guid? TenantId { get => _currentScope.Value; set => _currentScope.Value = value; }
+        public TenantInfo? Current { get => _currentScope.Value; set => _currentScope.Value = value; }
+
+        public CurrentTenantAccessor() => _currentScope = new AsyncLocal<TenantInfo?>();
     }
 }
