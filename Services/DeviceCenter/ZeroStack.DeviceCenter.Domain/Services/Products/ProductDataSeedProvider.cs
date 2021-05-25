@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate;
+using ZeroStack.DeviceCenter.Domain.Aggregates.TenantAggregate;
 using ZeroStack.DeviceCenter.Domain.Repositories;
 
 namespace ZeroStack.DeviceCenter.Domain.Services.Products
@@ -9,9 +10,12 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Products
     {
         private readonly IRepository<Product, Guid> _productRepository;
 
-        public ProductDataSeedProvider(IRepository<Product, Guid> productRepository)
+        private readonly ICurrentTenant _currentTenant;
+
+        public ProductDataSeedProvider(IRepository<Product, Guid> productRepository, ICurrentTenant currentTenant)
         {
             _productRepository = productRepository;
+            _currentTenant = currentTenant;
         }
 
         public async Task SeedAsync(IServiceProvider serviceProvider)
@@ -32,8 +36,11 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Products
                         tenantId = Guid.Parse($"f30e402b-9de2-4b48-9ff0-c073cf499103");
                     }
 
-                    var product = new Product { Name = $"Product{i.ToString().PadLeft(2, '0')}", TenantId = tenantId };
-                    await _productRepository.InsertAsync(product, true);
+                    using (_currentTenant.Change(tenantId))
+                    {
+                        var product = new Product { Name = $"Product{i.ToString().PadLeft(2, '0')}" };
+                        await _productRepository.InsertAsync(product, true);
+                    }
                 }
             }
         }

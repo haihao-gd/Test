@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,9 +13,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
 {
     public class DeviceCenterDbContext : DbContext, IUnitOfWork
     {
-        private readonly IMediator _mediator;
-
-        public DeviceCenterDbContext(DbContextOptions<DeviceCenterDbContext> options) : base(options) => _mediator = this.GetInfrastructure().GetService<IMediator>() ?? new NullMediator();
+        public DeviceCenterDbContext(DbContextOptions<DeviceCenterDbContext> options) : base(options) { }
 
         async Task IUnitOfWork.SaveChangesAsync(CancellationToken cancellationToken) => await base.SaveChangesAsync(cancellationToken);
 
@@ -28,8 +25,11 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
             {
                 if (entityType.ClrType.IsAssignableTo(typeof(IMultiTenant)))
                 {
-                    ICurrentTenant currentTenant = this.GetService<ICurrentTenant>();
-                    modelBuilder.Entity(entityType.ClrType).AddQueryFilter<IMultiTenant>(e => e.TenantId == currentTenant.Id);
+                    ICurrentTenant? currentTenant = this.GetInfrastructure().GetService<ICurrentTenant>();
+                    if (currentTenant is not null)
+                    {
+                        modelBuilder.Entity(entityType.ClrType).AddQueryFilter<IMultiTenant>(e => e.TenantId == currentTenant.Id);
+                    }
                 }
 
                 if (entityType.ClrType.IsAssignableTo(typeof(ISoftDelete)))

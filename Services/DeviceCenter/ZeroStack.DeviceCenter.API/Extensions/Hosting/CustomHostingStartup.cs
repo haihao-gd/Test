@@ -7,6 +7,7 @@ using System.Security.Claims;
 using ZeroStack.DeviceCenter.Application;
 using ZeroStack.DeviceCenter.Domain;
 using ZeroStack.DeviceCenter.Infrastructure;
+using ZeroStack.DeviceCenter.Infrastructure.ConnectionStrings;
 
 [assembly: HostingStartup(typeof(ZeroStack.DeviceCenter.API.Extensions.Hosting.CustomHostingStartup))]
 namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
@@ -34,6 +35,8 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
                     options.TokenValidationParameters.ValidateAudience = false;
                     options.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
                 });
+
+                services.Configure<TenantStoreOptions>(configuration);
             });
         }
     }
