@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
+using ZeroStack.DeviceCenter.Application.Queries.Factories;
+using ZeroStack.DeviceCenter.Application.Queries.Projects;
 using ZeroStack.DeviceCenter.Application.Services.Generics;
 using ZeroStack.DeviceCenter.Application.Services.Permissions;
 using ZeroStack.DeviceCenter.Application.Services.Products;
@@ -21,6 +23,8 @@ namespace ZeroStack.DeviceCenter.Application
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddApplicationServices();
             services.AddAuthorization();
+
+            services.AddQueries();
 
             ValidatorOptions.Global.LanguageManager = new Extensions.Validators.CustomLanguageManager();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -58,6 +62,14 @@ namespace ZeroStack.DeviceCenter.Application
 
             var permissionValueProviders = exportedTypes.Where(t => t.IsAssignableTo(typeof(IPermissionValueProvider)));
             permissionValueProviders.ToList().ForEach(t => services.AddTransient(typeof(IPermissionValueProvider), t));
+
+            return services;
+        }
+
+        private static IServiceCollection AddQueries(this IServiceCollection services)
+        {
+            services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+            services.AddTransient<IProjectQueries, ProjectQueries>();
 
             return services;
         }

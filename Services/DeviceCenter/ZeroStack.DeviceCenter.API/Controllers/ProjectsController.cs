@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
 using ZeroStack.DeviceCenter.Application.PermissionProviders;
+using ZeroStack.DeviceCenter.Application.Queries.Projects;
 using ZeroStack.DeviceCenter.Application.Services.Generics;
 
 namespace ZeroStack.DeviceCenter.API.Controllers
@@ -15,17 +16,19 @@ namespace ZeroStack.DeviceCenter.API.Controllers
     {
         private readonly ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> _crudService;
 
-        public ProjectsController(ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> crudService)
+        private readonly IProjectQueries _projectQueries;
+        public ProjectsController(ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> crudService, IProjectQueries projectQueries)
         {
             _crudService = crudService;
+            _projectQueries = projectQueries;
         }
 
         // GET: api/<ProjectsController>
         [HttpGet]
         [Authorize(ProjectPermissions.Projects.Default)]
-        public async Task<PagedResponseModel<ProjectGetResponseModel>> Get([FromQuery] PagedRequestModel model)
+        public async Task<PagedResponseModel<ProjectGetResponseModel>> Get([FromQuery] ProjectPagedRequestModel model)
         {
-            return await _crudService.GetListAsync(model);
+            return await _projectQueries.GetProjectsAsync(model);
         }
 
         // GET api/<ProjectsController>/5
@@ -33,7 +36,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
         [Authorize(ProjectPermissions.Projects.Default)]
         public async Task<ProjectGetResponseModel> Get(int id)
         {
-            return await _crudService.GetAsync(id);
+            return await _projectQueries.GetProjectAsync(id);
         }
 
         // POST api/<ProjectsController>

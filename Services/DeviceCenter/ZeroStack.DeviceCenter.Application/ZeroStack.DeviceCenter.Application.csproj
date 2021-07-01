@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.5.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="5.0.0" />
@@ -25,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ZeroStack.DeviceCenter.Domain\ZeroStack.DeviceCenter.Domain.csproj" />
+    <ProjectReference Include="..\ZeroStack.DeviceCenter.Infrastructure\ZeroStack.DeviceCenter.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
