@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZeroStack.FunctionalTests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZeroStack.EventBus.MemoryQueue", "BuildingBlocks\EventBus\ZeroStack.EventBus.MemoryQueue\ZeroStack.EventBus.MemoryQueue.csproj", "{0CDF5B52-0747-420D-B891-9A7D2A866CF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeroStack.IdentityServer.API", "Services\Identity\ZeroStack.IdentityServer.API\ZeroStack.IdentityServer.API.csproj", "{E07432A1-2DF4-4203-A984-0DBDC2F91B94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZeroStack.IdentityServer.API", "Services\Identity\ZeroStack.IdentityServer.API\ZeroStack.IdentityServer.API.csproj", "{E07432A1-2DF4-4203-A984-0DBDC2F91B94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
