@@ -6,7 +6,7 @@ namespace ZeroStack.DeviceCenter.Application.Models.Permissions
     {
         public string Name { get; set; } = null!;
 
-        public string DisplayName { get; set; } = null!;
+        public string? DisplayName { get; set; }
 
         public string ParentName { get; set; } = null!;
 
