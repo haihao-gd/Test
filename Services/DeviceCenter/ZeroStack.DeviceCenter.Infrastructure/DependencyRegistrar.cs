@@ -10,6 +10,7 @@ using ZeroStack.DeviceCenter.Domain.Repositories;
 using ZeroStack.DeviceCenter.Infrastructure.ConnectionStrings;
 using ZeroStack.DeviceCenter.Infrastructure.Constants;
 using ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks;
+using ZeroStack.DeviceCenter.Infrastructure.Idempotency;
 using ZeroStack.DeviceCenter.Infrastructure.Repositories;
 
 namespace ZeroStack.DeviceCenter.Infrastructure
@@ -61,6 +62,8 @@ namespace ZeroStack.DeviceCenter.Infrastructure
 
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IPermissionGrantRepository, PermissionGrantRepository>();
+
+            services.AddTransient<IRequestManager, RequestManager>();
 
             return services;
         }

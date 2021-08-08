@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ZeroStack.DeviceCenter.Application.Commands.Projects;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
 using ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate;
 
@@ -10,6 +11,9 @@ namespace ZeroStack.DeviceCenter.Application.AutoMapper
         {
             CreateMap<Project, ProjectGetResponseModel>();
             CreateMap<ProjectCreateOrUpdateRequestModel, Project>();
+            CreateMap<CreateProjectCommand, Project>();
+
+
         }
     }
 }

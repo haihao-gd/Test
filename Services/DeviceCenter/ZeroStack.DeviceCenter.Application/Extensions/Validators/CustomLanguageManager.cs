@@ -1,6 +1,4 @@
-﻿using FluentValidation.Validators;
-
-namespace ZeroStack.DeviceCenter.Application.Extensions.Validators
+﻿namespace ZeroStack.DeviceCenter.Application.Extensions.Validators
 {
     public class CustomLanguageManager : FluentValidation.Resources.LanguageManager
     {

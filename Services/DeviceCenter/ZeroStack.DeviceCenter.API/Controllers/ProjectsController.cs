@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using ZeroStack.DeviceCenter.Application.Commands.Projects;
+using ZeroStack.DeviceCenter.Application.Infrastructure;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
 using ZeroStack.DeviceCenter.Application.PermissionProviders;
@@ -17,10 +21,14 @@ namespace ZeroStack.DeviceCenter.API.Controllers
         private readonly ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> _crudService;
 
         private readonly IProjectQueries _projectQueries;
-        public ProjectsController(ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> crudService, IProjectQueries projectQueries)
+
+        private readonly IMediator _mediator;
+
+        public ProjectsController(ICrudApplicationService<int, ProjectGetResponseModel, PagedRequestModel, ProjectGetResponseModel, ProjectCreateOrUpdateRequestModel, ProjectCreateOrUpdateRequestModel> crudService, IProjectQueries projectQueries, IMediator mediator)
         {
             _crudService = crudService;
             _projectQueries = projectQueries;
+            _mediator = mediator;
         }
 
         // GET: api/<ProjectsController>
@@ -42,9 +50,15 @@ namespace ZeroStack.DeviceCenter.API.Controllers
         // POST api/<ProjectsController>
         [HttpPost]
         [Authorize(ProjectPermissions.Projects.Create)]
-        public async Task<ProjectGetResponseModel> Post([FromBody] ProjectCreateOrUpdateRequestModel value)
+        public async Task<ProjectGetResponseModel> Post([FromBody] CreateProjectCommand command, [FromHeader(Name = "X-Request-Id")] string? requestId)
         {
-            return await _crudService.CreateAsync(value);
+            requestId ??= Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+            var identifiedCommand = new IdentifiedCommand<CreateProjectCommand, ProjectGetResponseModel>(command, requestId);
+
+            ProjectGetResponseModel result = await _mediator.Send(identifiedCommand);
+
+            return result;
         }
 
         // PUT api/<ProjectsController>/5
