@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Reflection;
+using ZeroStack.DeviceCenter.Application.Behaviors;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Projects;
 using ZeroStack.DeviceCenter.Application.Queries.Factories;
@@ -35,6 +36,9 @@ namespace ZeroStack.DeviceCenter.Application
         private static IServiceCollection AddDomainEvents(this IServiceCollection services)
         {
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
 
             return services;
         }

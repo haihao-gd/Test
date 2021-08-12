@@ -9,7 +9,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
         {
             var optionsBuilder = new DbContextOptionsBuilder<DeviceCenterDbContext>();
 
-            optionsBuilder.UseSqlServer(@"Server=(LocalDb)\MSSQLLocalDB;Database=DeviceCenter;Trusted_Connection=True");
+            optionsBuilder.UseSqlServer(@"Server=(LocalDb)\MSSQLLocalDB;Database=ZeroStack.DeviceCenter;Trusted_Connection=True");
 
             return new DeviceCenterDbContext(optionsBuilder.Options);
         }

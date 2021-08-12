@@ -39,6 +39,6 @@ namespace ZeroStack.DeviceCenter.Application.Commands.Projects
         /// <summary>
         /// // Ignore duplicate requests for processing.
         /// </summary>
-        protected override ProjectGetResponseModel? CreateResultForDuplicateRequest() => new ProjectGetResponseModel();
+        protected override ProjectGetResponseModel? CreateResultForDuplicateRequest() => new();
     }
 }

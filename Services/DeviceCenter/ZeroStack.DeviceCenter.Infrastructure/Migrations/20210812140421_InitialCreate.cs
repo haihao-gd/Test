@@ -8,13 +8,43 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Idempotency",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Time = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Idempotency", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionGrants",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    ProviderName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    ProviderKey = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionGrants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: true),
-                    Remark = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                    Remark = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,18 +63,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projects", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tenants",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tenants", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,25 +114,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                         name: "FK_ProjectGroups_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TenantConnectionStrings",
-                columns: table => new
-                {
-                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TenantConnectionStrings", x => new { x.TenantId, x.Name });
-                    table.ForeignKey(
-                        name: "FK_TenantConnectionStrings_Tenants_TenantId",
-                        column: x => x.TenantId,
-                        principalTable: "Tenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -172,6 +171,11 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                 column: "DeviceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PermissionGrants_Name_ProviderName_ProviderKey",
+                table: "PermissionGrants",
+                columns: new[] { "Name", "ProviderName", "ProviderKey" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProjectGroups_ParentId",
                 table: "ProjectGroups",
                 column: "ParentId");
@@ -180,11 +184,6 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                 name: "IX_ProjectGroups_ProjectId",
                 table: "ProjectGroups",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tenants_Name",
-                table: "Tenants",
-                column: "Name");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -196,19 +195,19 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                 name: "DeviceTags");
 
             migrationBuilder.DropTable(
-                name: "ProjectGroups");
+                name: "Idempotency");
 
             migrationBuilder.DropTable(
-                name: "TenantConnectionStrings");
+                name: "PermissionGrants");
+
+            migrationBuilder.DropTable(
+                name: "ProjectGroups");
 
             migrationBuilder.DropTable(
                 name: "Devices");
 
             migrationBuilder.DropTable(
                 name: "Projects");
-
-            migrationBuilder.DropTable(
-                name: "Tenants");
 
             migrationBuilder.DropTable(
                 name: "Products");
