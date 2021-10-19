@@ -40,6 +40,7 @@ export async function findPetsByStatus(
     params: {
       ...params,
     },
+
     ...(options || {}),
   });
 }
@@ -58,6 +59,7 @@ export async function findPetsByTags(
     params: {
       ...params,
     },
+
     ...(options || {}),
   });
 }
@@ -71,10 +73,11 @@ export async function getPetById(
   },
   options?: { [key: string]: any },
 ) {
-  const { petId: param0, ...queryParams } = params;
+  const { petId: param0 } = params;
   return request<API.Pet>(`/pet/${param0}`, {
     method: 'GET',
-    params: { ...queryParams },
+    params: { ...params },
+
     ...(options || {}),
   });
 }
@@ -89,7 +92,7 @@ export async function updatePetWithForm(
   body: { name?: string; status?: string },
   options?: { [key: string]: any },
 ) {
-  const { petId: param0, ...queryParams } = params;
+  const { petId: param0 } = params;
   const formData = new FormData();
 
   Object.keys(body).forEach((ele) => {
@@ -105,7 +108,7 @@ export async function updatePetWithForm(
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    params: { ...queryParams },
+    params: { ...params },
     data: formData,
     ...(options || {}),
   });
@@ -122,11 +125,10 @@ export async function deletePet(
   },
   options?: { [key: string]: any },
 ) {
-  const { petId: param0, ...queryParams } = params;
+  const { petId: param0 } = params;
   return request<any>(`/pet/${param0}`, {
     method: 'DELETE',
-    headers: {},
-    params: { ...queryParams },
+    params: { ...params },
     ...(options || {}),
   });
 }
@@ -139,14 +141,11 @@ export async function uploadFile(
     petId: number;
   },
   body: { additionalMetadata?: string; file?: string },
-  files?: File[],
   options?: { [key: string]: any },
 ) {
-  const { petId: param0, ...queryParams } = params;
+  const { petId: param0 } = params;
   const formData = new FormData();
-  if (files) {
-    formData.append('file', files[0] || '');
-  }
+
   Object.keys(body).forEach((ele) => {
     const item = (body as any)[ele];
 
@@ -160,7 +159,7 @@ export async function uploadFile(
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-    params: { ...queryParams },
+    params: { ...params },
     data: formData,
     ...(options || {}),
   });

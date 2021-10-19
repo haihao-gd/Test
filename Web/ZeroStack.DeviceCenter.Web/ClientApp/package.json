@@ -21,6 +21,7 @@
     "openapi": "umi openapi",
     "precommit": "lint-staged",
     "prettier": "prettier -c --write \"src/**/*\"",
+    "serve": "umi-serve",
     "start": "cross-env UMI_ENV=dev umi dev",
     "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none UMI_ENV=dev umi dev",
     "start:no-mock": "cross-env MOCK=none UMI_ENV=dev umi dev",
@@ -31,7 +32,6 @@
     "test": "umi test",
     "test:all": "node ./tests/run-tests.js",
     "test:component": "umi test ./src/components",
-    "serve": "umi-serve",
     "tsc": "tsc --noEmit"
   },
   "lint-staged": {

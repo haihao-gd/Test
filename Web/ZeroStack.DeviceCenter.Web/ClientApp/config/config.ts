@@ -64,12 +64,6 @@ export default defineConfig({
       schemaPath: 'https://gw.alipayobjects.com/os/antfincdn/CA1dOm%2631B/openapi.json',
       projectName: 'swagger',
     },
-    {
-      requestLibPath: "import { request } from 'umi'",
-      schemaPath: 'https://identityserver.helloworldnet.com/swagger/v1/swagger.json',
-      projectName: 'identityserver',
-      mock: true,
-    },
   ],
   nodeModulesTransform: { type: 'none' },
   mfsu: {},
