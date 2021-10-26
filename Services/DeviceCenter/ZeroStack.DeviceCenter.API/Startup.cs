@@ -27,7 +27,16 @@ namespace ZeroStack.DeviceCenter.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Device Center API", Version = "v1" });
+
+                c.SupportNonNullableReferenceTypes();
+
+                c.UseAllOfToExtendReferenceSchemas();
+
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                c.OperationFilter<CamelCaseNamingOperationFilter>();
+
+                c.CustomOperationIds(api => $"{System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(api.ActionDescriptor.RouteValues["action"])}");
 
                 string identityServer = Configuration.GetValue<string>("IdentityServer:AuthorizationUrl");
 
