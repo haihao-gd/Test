@@ -22,7 +22,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
 
         [HttpGet]
         //[Authorize(ProductPermissions.Products.Default)]
-        public async Task<PagedResponseModel<ProductGetResponseModel>> GetProducts([FromQuery] PagedRequestModel model)
+        public async Task<PagedResponseModel<ProductGetResponseModel>> GetProducts([FromQuery] ProductPagedRequestModel model)
         {
             return await _productService.GetListAsync(model);
         }

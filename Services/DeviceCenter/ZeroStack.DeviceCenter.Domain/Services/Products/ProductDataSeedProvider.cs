@@ -20,7 +20,7 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Products
 
         public async Task SeedAsync(IServiceProvider serviceProvider)
         {
-            if (await _productRepository.GetCountAsync() <= 0)
+            if (await _productRepository.GetCountAsync() <= 100)
             {
                 for (int i = 1; i < 30; i++)
                 {

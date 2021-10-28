@@ -12,11 +12,14 @@ export default () => {
             title: <FormattedMessage id='pages.products.index.table.id' />,
             dataIndex: 'id',
             valueType: 'text',
+            sorter: { multiple: 1 },
         },
         {
             title: <FormattedMessage id='pages.products.index.table.name' />,
             dataIndex: 'name',
             valueType: 'text',
+            sorter: { multiple: 2 },
+            defaultSortOrder: 'descend'
         },
         {
             title: <FormattedMessage id='pages.products.index.table.creationTime' />,
@@ -34,11 +37,14 @@ export default () => {
                 message.success('ddd')
             }}>ok</Button>}
             options={{ fullScreen: true, search: true }}
-            request={async (params: any) => {
+            request={async (params: any, sort: any) => {
+
                 const result = await getProducts(
                     {
+                        sorter: sort,
                         pageNumber: params.current,
                         pageSize: params.pageSize,
+                        keyword: params.keyword,
                     });
 
                 return {

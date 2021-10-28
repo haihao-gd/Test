@@ -7,7 +7,7 @@ using ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate;
 
 namespace ZeroStack.DeviceCenter.Application.Services.Products
 {
-    public interface IProductApplicationService : ICrudApplicationService<Guid, ProductGetResponseModel, PagedRequestModel, ProductGetResponseModel, ProductCreateOrUpdateRequestModel, ProductCreateOrUpdateRequestModel>
+    public interface IProductApplicationService : ICrudApplicationService<Guid, ProductGetResponseModel, ProductPagedRequestModel, ProductGetResponseModel, ProductCreateOrUpdateRequestModel, ProductCreateOrUpdateRequestModel>
     {
         Task<Product> GetByName(string productName);
     }

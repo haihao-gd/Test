@@ -6,7 +6,8 @@ import { request } from 'umi';
 export async function getProducts(
   params: {
     // query
-    sorting?: string;
+    keyword?: string;
+    sorter?: string;
     pageNumber?: number;
     pageSize?: number;
   },

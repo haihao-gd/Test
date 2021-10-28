@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using ZeroStack.DeviceCenter.API.Extensions.Tenants;
 using ZeroStack.DeviceCenter.API.Infrastructure.Swagger;
+using ZeroStack.DeviceCenter.Application.Services.Generics;
 
 namespace ZeroStack.DeviceCenter.API
 {
@@ -57,6 +58,8 @@ namespace ZeroStack.DeviceCenter.API
                         }
                     }
                 });
+
+                c.MapType<IEnumerable<SortingDescriptor>>(() => new OpenApiSchema { Type = "string", Format = "json" });
             });
 
             services.AddTenantMiddleware();

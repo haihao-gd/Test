@@ -7,7 +7,7 @@ export async function get(
   params: {
     // query
     keyword?: string;
-    sorting?: string;
+    sorter?: string;
     pageNumber?: number;
     pageSize?: number;
   },

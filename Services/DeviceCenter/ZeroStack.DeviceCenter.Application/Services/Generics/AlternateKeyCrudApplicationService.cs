@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,12 +55,39 @@ namespace ZeroStack.DeviceCenter.Application.Services.Generics
 
         protected virtual IQueryable<TEntity> ApplySorting(IQueryable<TEntity> query, TGetListRequestModel requestModel)
         {
-            if (requestModel is PagedRequestModel model && !string.IsNullOrWhiteSpace(model.Sorting))
+            var pagedRequestModel = requestModel as PagedRequestModel;
+
+            if (pagedRequestModel is not null && pagedRequestModel.Sorter is not null && pagedRequestModel.Sorter.Any())
             {
-                return query.OrderBy(model.Sorting);
+                var properties = query.GetType().GetGenericArguments().First().GetProperties();
+
+                IOrderedQueryable<TEntity>? orderedQueryable = null;
+
+                foreach (SortingDescriptor sortingDescriptor in pagedRequestModel.Sorter)
+                {
+                    string? propertyName = properties.SingleOrDefault(p => string.Equals(p.Name, sortingDescriptor.PropertyName, StringComparison.OrdinalIgnoreCase))?.Name;
+
+                    if (propertyName is null)
+                    {
+                        throw new KeyNotFoundException(sortingDescriptor.PropertyName);
+                    }
+
+                    if (sortingDescriptor.SortDirection == SortingOrder.Ascending)
+                    {
+                        orderedQueryable = orderedQueryable is null ? query.OrderBy(propertyName) : orderedQueryable.ThenBy(propertyName);
+                    }
+                    else if (sortingDescriptor.SortDirection == SortingOrder.Descending)
+                    {
+                        orderedQueryable = orderedQueryable is null ? query.OrderByDescending(propertyName) : orderedQueryable.ThenByDescending(propertyName);
+                    }
+                }
+
+                return orderedQueryable ?? query;
             }
 
-            return query;
+            string firstPropertyName = typeof(TEntity).GetProperties().First().Name;
+
+            return query.OrderByDescending(firstPropertyName);
         }
 
         protected virtual IQueryable<TEntity> ApplyPaging(IQueryable<TEntity> query, TGetListRequestModel requestModel)
