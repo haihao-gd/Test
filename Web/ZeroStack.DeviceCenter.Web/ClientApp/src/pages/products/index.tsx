@@ -1,20 +1,26 @@
 import { FormattedMessage } from "@/.umi/plugin-locale/localeExports";
-import { getProduct, getProducts } from "@/services/deviceCenter/Products"
-import { DownloadOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { getProduct, getProducts, postProduct } from "@/services/deviceCenter/Products"
+import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import type { ProDescriptionsItemProps } from "@ant-design/pro-descriptions";
 import ProDescriptions from "@ant-design/pro-descriptions";
-import { ProFormDateRangePicker } from "@ant-design/pro-form";
+import { ModalForm, ProFormDateRangePicker, ProFormDateTimePicker, ProFormText } from "@ant-design/pro-form";
 import { PageContainer } from "@ant-design/pro-layout";
-import type { ProColumns } from "@ant-design/pro-table";
+import type { ActionType, ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table"
+import type { FormInstance } from "antd";
 import { Button, Drawer, message, Tooltip } from "antd";
-import { useState } from "react";
+import moment from "moment";
+import { useRef, useState } from "react";
 
 export default () => {
 
     const [showDetail, setShowDetail] = useState<boolean>(false);
 
     const [currentRow, setCurrentRow] = useState<API.ProductGetResponseModel>();
+
+    const tableActionRef = useRef<ActionType>();
+
+    const createFormRef = useRef<FormInstance>();
 
     const columns: ProColumns<API.ProductGetResponseModel>[] = [
         {
@@ -23,14 +29,13 @@ export default () => {
             valueType: 'text',
             sorter: { multiple: 1 },
             search: false,
-            hideInTable: true,
+            //hideInTable: true,
         },
         {
             title: <FormattedMessage id='pages.products.index.table.name' />,
             dataIndex: 'name',
             valueType: 'text',
             sorter: { multiple: 2 },
-            defaultSortOrder: 'descend',
             search: { transform: () => 'productName' },
             filters: true,
             onFilter: true,
@@ -55,6 +60,8 @@ export default () => {
             renderFormItem: () => {
                 return <ProFormDateRangePicker name="dateRange" />
             },
+            sorter: { multiple: 3, },
+            defaultSortOrder: 'descend',
         },
     ]
 
@@ -63,9 +70,47 @@ export default () => {
             <ProTable<API.ProductGetResponseModel>
                 columns={columns}
                 rowKey='id'
-                headerTitle={<Button type='dashed' icon={<PlayCircleOutlined />} onClick={() => {
-                    message.success('ddd')
-                }}>ok</Button>}
+                actionRef={tableActionRef}
+                headerTitle={
+                    <ModalForm<API.ProductCreateOrUpdateRequestModel>
+                        title="创建产品"
+                        formRef={createFormRef}
+                        trigger={
+                            <Button type="primary">
+                                <PlusOutlined />
+                                创建产品
+                            </Button>
+                        }
+                        modalProps={{
+                            onCancel: () => console.log('run'),
+                        }}
+                        onFinish={async (values) => {
+
+                            values.creationTime = moment(values.creationTime).toISOString();
+                            const result = await postProduct(values);
+                            if (result) {
+                                message.success('创建产品成功。');
+                                createFormRef.current?.resetFields();
+                                tableActionRef.current?.reload();
+                                return true;
+                            }
+                            else {
+                                message.error('创建产品失败。');
+                                return false;
+                            }
+                        }}
+                    >
+                        <ProFormText name="name" label="产品名称" rules={[{
+                            type: "string",
+                            required: true,
+                            min: 3,
+                            max: 15,
+                        }]} />
+                        <ProFormDateTimePicker name="creationTime" label="创建时间" rules={[{
+                            required: true,
+                        }]} />
+                    </ModalForm>
+                }
                 options={{ fullScreen: true, search: false, }}
                 toolbar={{
                     actions: [
@@ -91,6 +136,7 @@ export default () => {
                 }
                 }
                 pagination={{ showSizeChanger: true, showQuickJumper: true }}
+                search={{ labelWidth: 'auto' }}
             />
             <Drawer
                 width={400}

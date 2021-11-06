@@ -32,6 +32,11 @@ namespace ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate
         public bool IsDeleted { get; set; }
 
         /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTimeOffset CreationTime { get; set; }
+
+        /// <summary>
         /// 租户标识
         /// </summary>
         public Guid? TenantId { get; set; }

@@ -10,7 +10,7 @@ using ZeroStack.IdentityServer.API.Models;
 namespace ZeroStack.IdentityServer.API.Migrations.ApplicationMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210812140048_InitialCreate")]
+    [Migration("20211106140453_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

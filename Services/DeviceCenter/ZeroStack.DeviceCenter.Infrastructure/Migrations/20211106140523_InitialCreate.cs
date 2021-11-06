@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 {
@@ -44,6 +44,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                     ProjectId = table.Column<int>(type: "int", nullable: true),
                     Remark = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreationTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>

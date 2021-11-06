@@ -35,7 +35,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(ProductPermissions.Products.Create)]
+        //[Authorize(ProductPermissions.Products.Create)]
         public async Task<ProductGetResponseModel> PostProduct([FromBody] ProductCreateOrUpdateRequestModel value)
         {
             return await _productService.CreateAsync(value);

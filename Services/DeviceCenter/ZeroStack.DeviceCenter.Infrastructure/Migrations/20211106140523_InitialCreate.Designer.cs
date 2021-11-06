@@ -10,7 +10,7 @@ using ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks;
 namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 {
     [DbContext(typeof(DeviceCenterDbContext))]
-    [Migration("20210812140421_InitialCreate")]
+    [Migration("20211106140523_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,6 +111,9 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreationTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

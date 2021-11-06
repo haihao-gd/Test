@@ -38,7 +38,7 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Products
 
                     using (_currentTenant.Change(tenantId))
                     {
-                        var product = new Product { Name = $"Product{i.ToString().PadLeft(2, '0')}" };
+                        var product = new Product { Name = $"Product{i.ToString().PadLeft(2, '0')}", CreationTime = DateTimeOffset.Now };
                         await _productRepository.InsertAsync(product, true);
                     }
                 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ZeroStack.IdentityServer.API.Migrations.PersistedGrantMigrations
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20210812140032_InitialCreate")]
+    [Migration("20211106140439_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
