@@ -100,10 +100,14 @@ namespace ZeroStack.DeviceCenter.Application.Services.Generics
             return query;
         }
 
-        public async Task<TGetResponseModel> UpdateAsync(TUpdateRequestModel requestModel)
+        public async Task<TGetResponseModel> UpdateAsync(TKey id, TUpdateRequestModel requestModel)
         {
-            TEntity entity = _mapper.Map<TEntity>(requestModel);
+            TEntity entity = await GetEntityByIdAsync(id);
+
+            _mapper.Map(requestModel, entity);
+
             await Repository.UpdateAsync(entity, true);
+
             return _mapper.Map<TGetResponseModel>(entity);
         }
     }

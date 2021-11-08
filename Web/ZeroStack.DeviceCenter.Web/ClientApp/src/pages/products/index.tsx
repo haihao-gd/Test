@@ -1,5 +1,5 @@
 import { FormattedMessage } from "@/.umi/plugin-locale/localeExports";
-import { getProduct, getProducts, postProduct } from "@/services/deviceCenter/Products"
+import { getProduct, getProducts, postProduct, putProduct } from "@/services/deviceCenter/Products"
 import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import type { ProDescriptionsItemProps } from "@ant-design/pro-descriptions";
 import ProDescriptions from "@ant-design/pro-descriptions";
@@ -11,12 +11,15 @@ import type { FormInstance } from "antd";
 import { Button, Drawer, message, Tooltip } from "antd";
 import moment from "moment";
 import { useRef, useState } from "react";
+import UpdateForm from "./components/UpdateForm";
 
 export default () => {
 
     const [showDetail, setShowDetail] = useState<boolean>(false);
 
     const [currentRow, setCurrentRow] = useState<API.ProductGetResponseModel>();
+
+    const [updateVisible, setUpdateVisible] = useState<boolean>(false);
 
     const tableActionRef = useRef<ActionType>();
 
@@ -63,6 +66,18 @@ export default () => {
             sorter: { multiple: 3, },
             defaultSortOrder: 'descend',
         },
+        {
+            title: '操作',
+            dataIndex: 'option',
+            valueType: 'option',
+            render: (dom: any, entity: API.ProductGetResponseModel) => [
+                <a key={entity.id}
+                    onClick={() => {
+                        setUpdateVisible(true);
+                        setCurrentRow(entity);
+                    }}>编辑</a>
+            ]
+        }
     ]
 
     return (
@@ -75,12 +90,10 @@ export default () => {
                     <ModalForm<API.ProductCreateOrUpdateRequestModel>
                         title="创建产品"
                         formRef={createFormRef}
-                        trigger={
-                            <Button type="primary">
-                                <PlusOutlined />
-                                创建产品
-                            </Button>
-                        }
+                        trigger={<Button type="primary">
+                            <PlusOutlined />
+                            创建产品
+                        </Button>}
                         modalProps={{
                             onCancel: () => console.log('run'),
                         }}
@@ -110,6 +123,7 @@ export default () => {
                             required: true,
                         }]} />
                     </ModalForm>
+
                 }
                 options={{ fullScreen: true, search: false, }}
                 toolbar={{
@@ -158,6 +172,26 @@ export default () => {
                     columns={columns as ProDescriptionsItemProps<API.ProductGetResponseModel>[]}
                 />
             </Drawer>
+
+            {
+                currentRow?.id ? <UpdateForm id={currentRow.id}
+                    visible={updateVisible}
+                    onCancel={() => {
+                        setUpdateVisible(false);
+                        setCurrentRow(undefined);
+                    }}
+                    onSubmit={async (formData: API.ProductCreateOrUpdateRequestModel) => {
+                        if (formData.id) {
+                            formData.creationTime = moment(formData.creationTime).toISOString();
+                            await putProduct({ id: formData.id }, formData);
+                            message.success("保存成功");
+                            tableActionRef.current?.reload();
+                            setUpdateVisible(false);
+                        }
+                    }}
+                /> : null
+            }
+
         </PageContainer>
     )
 }

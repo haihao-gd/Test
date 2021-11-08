@@ -42,11 +42,11 @@ namespace ZeroStack.DeviceCenter.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(ProductPermissions.Products.Edit)]
+        //[Authorize(ProductPermissions.Products.Edit)]
         public async Task<ProductGetResponseModel> PutProduct(Guid id, [FromBody] ProductCreateOrUpdateRequestModel value)
         {
             value.Id = id;
-            return await _productService.UpdateAsync(value);
+            return await _productService.UpdateAsync(id,value);
         }
 
         [HttpDelete("{id}")]
