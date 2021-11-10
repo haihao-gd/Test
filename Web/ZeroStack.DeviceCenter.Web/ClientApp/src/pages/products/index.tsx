@@ -1,5 +1,4 @@
-import { FormattedMessage } from "@/.umi/plugin-locale/localeExports";
-import { getProduct, getProducts, postProduct, putProduct } from "@/services/deviceCenter/Products"
+import { deleteProduct, getProduct, getProducts, postProduct, putProduct } from "@/services/deviceCenter/Products"
 import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import type { ProDescriptionsItemProps } from "@ant-design/pro-descriptions";
 import ProDescriptions from "@ant-design/pro-descriptions";
@@ -8,6 +7,8 @@ import { PageContainer } from "@ant-design/pro-layout";
 import type { ActionType, ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table"
 import type { FormInstance } from "antd";
+import { Popconfirm } from "antd";
+import { FormattedMessage } from 'umi';
 import { Button, Drawer, message, Tooltip } from "antd";
 import moment from "moment";
 import { useRef, useState } from "react";
@@ -75,7 +76,23 @@ export default () => {
                     onClick={() => {
                         setUpdateVisible(true);
                         setCurrentRow(entity);
-                    }}>编辑</a>
+                    }}>编辑</a>,
+                <Popconfirm
+                    title="确定要删除此项吗？"
+                    onConfirm={async () => {
+                        const hide = message.loading('正在删除中...');
+                        if (entity.id) {
+                            await deleteProduct({ id: entity.id });
+                            hide();
+                            message.success('删除产品成功。');
+                            tableActionRef.current?.reload();
+                        }
+                    }}
+                    okText="是"
+                    cancelText="否"
+                >
+                    <a href="#">删除</a>,
+                </Popconfirm>
             ]
         }
     ]
