@@ -3,16 +3,18 @@ import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import type { ProDescriptionsItemProps } from "@ant-design/pro-descriptions";
 import ProDescriptions from "@ant-design/pro-descriptions";
 import { ModalForm, ProFormDateRangePicker, ProFormDateTimePicker, ProFormText } from "@ant-design/pro-form";
-import { PageContainer } from "@ant-design/pro-layout";
+import { FooterToolbar, PageContainer } from "@ant-design/pro-layout";
 import type { ActionType, ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table"
 import type { FormInstance } from "antd";
+import { Space } from "antd";
 import { Popconfirm } from "antd";
 import { FormattedMessage } from 'umi';
 import { Button, Drawer, message, Tooltip } from "antd";
 import moment from "moment";
 import { useRef, useState } from "react";
 import UpdateForm from "./components/UpdateForm";
+import { await } from "@umijs/deps/compiled/signale";
 
 export default () => {
 
@@ -25,6 +27,8 @@ export default () => {
     const tableActionRef = useRef<ActionType>();
 
     const createFormRef = useRef<FormInstance>();
+
+    const [selectedRows, setSelectedRows] = useState<API.ProductGetResponseModel[]>([]);
 
     const columns: ProColumns<API.ProductGetResponseModel>[] = [
         {
@@ -91,11 +95,32 @@ export default () => {
                     okText="是"
                     cancelText="否"
                 >
-                    <a href="#">删除</a>,
+                    <a href="#">删除</a>
                 </Popconfirm>
             ]
         }
     ]
+
+    const batchDelete = async (selectRows: API.ProductGetResponseModel[]) => {
+        if (selectRows) {
+            const hide = message.loading('正在批量删除...');
+            try {
+                await Promise.all(selectRows.map(async p => {
+                    if (p.id) {
+                        await deleteProduct({ id: p.id });
+                    }
+                }));
+                tableActionRef.current?.clearSelected?.();
+                tableActionRef.current?.reload();
+                message.success('批量删除成功。');
+            }
+            catch (error) {
+                message.success('批量删除失败。');
+            }
+
+            hide();
+        }
+    };
 
     return (
         <PageContainer>
@@ -168,6 +193,37 @@ export default () => {
                 }
                 pagination={{ showSizeChanger: true, showQuickJumper: true }}
                 search={{ labelWidth: 'auto' }}
+                rowSelection={{
+                    //selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
+                    // eslint-disable-next-line @typescript-eslint/no-shadow
+                    onChange: (_, selectedRows) => {
+                        setSelectedRows(selectedRows);
+                    },
+                }}
+                // eslint-disable-next-line @typescript-eslint/no-shadow
+                tableAlertOptionRender={({ selectedRows, onCleanSelected }) => {
+                    return (
+                        <Space size={16}>
+                            <a onClick={
+                                async () => {
+                                    await batchDelete(selectedRows);
+                                    onCleanSelected();
+                                }
+                            } >批量删除</a>
+                            <a>导出数据</a>
+                        </Space>
+                    );
+                }}
+                tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
+                    <Space size={24}>
+                        <span>
+                            已选 {selectedRowKeys.length} 项
+                            <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
+                                取消选择
+                            </a>
+                        </span>
+                    </Space>
+                )}
             />
             <Drawer
                 width={400}
@@ -208,7 +264,18 @@ export default () => {
                     }}
                 /> : null
             }
-
+            {
+                selectedRows?.length > 0 && <FooterToolbar extra={
+                    <div>
+                        已选 {selectedRows.length} 项
+                    </div>
+                }>
+                    <Button type='primary' onClick={async () => {
+                        await batchDelete(selectedRows);
+                        setSelectedRows([]);
+                    }}>批量删除</Button>
+                </FooterToolbar>
+            }
         </PageContainer>
     )
 }
