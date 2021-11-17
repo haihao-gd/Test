@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Products;
-using ZeroStack.DeviceCenter.Application.PermissionProviders;
 using ZeroStack.DeviceCenter.Application.Services.Products;
 
 namespace ZeroStack.DeviceCenter.API.Controllers
@@ -46,7 +44,7 @@ namespace ZeroStack.DeviceCenter.API.Controllers
         public async Task<ProductGetResponseModel> PutProduct(Guid id, [FromBody] ProductCreateOrUpdateRequestModel value)
         {
             value.Id = id;
-            return await _productService.UpdateAsync(id,value);
+            return await _productService.UpdateAsync(id, value);
         }
 
         [HttpDelete("{id}")]

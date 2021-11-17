@@ -65,6 +65,11 @@ namespace ZeroStack.DeviceCenter.Infrastructure
 
             services.AddTransient<IRequestManager, RequestManager>();
 
+            services.Configure<IncludeRelatedPropertiesOptions>(options =>
+            {
+                options.ConfigIncludes<Product>(e => e.Include(e => e.Devices).ThenInclude(e => e.Address));
+            });
+
             return services;
         }
     }

@@ -9,7 +9,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Generics
 
         Task DeleteAsync(TKey id);
 
-        Task<TGetResponseModel> UpdateAsync(TKey id,TUpdateRequestModel requestModel);
+        Task<TGetResponseModel> UpdateAsync(TKey id, TUpdateRequestModel requestModel);
 
         Task<TGetResponseModel> GetAsync(TKey id);
 

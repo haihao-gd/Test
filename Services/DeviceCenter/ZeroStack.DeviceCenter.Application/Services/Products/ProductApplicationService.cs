@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ZeroStack.DeviceCenter.Application.Models.Generics;
 using ZeroStack.DeviceCenter.Application.Models.Products;
 using ZeroStack.DeviceCenter.Application.Services.Generics;
 using ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate;
@@ -19,9 +18,9 @@ namespace ZeroStack.DeviceCenter.Application.Services.Products
 
         protected override IQueryable<Product> CreateFilteredQuery(ProductPagedRequestModel requestModel)
         {
-            if (requestModel.Keyword is not null&&!string.IsNullOrWhiteSpace(requestModel.Keyword))
+            if (requestModel.Keyword is not null && !string.IsNullOrWhiteSpace(requestModel.Keyword))
             {
-                return Repository.Query.Where(e=>e.Name.Contains(requestModel.Keyword));
+                return Repository.Query.Where(e => e.Name.Contains(requestModel.Keyword));
             }
 
             return base.CreateFilteredQuery(requestModel);
@@ -30,6 +29,18 @@ namespace ZeroStack.DeviceCenter.Application.Services.Products
         public async Task<Product> GetByName(string productName)
         {
             return await Repository.GetAsync(p => p.Name == productName);
+        }
+
+        public async Task<Product> GetProductForRelated()
+        {
+            Product product = await Repository.GetAsync(Guid.NewGuid(), false);
+
+            await Repository.LoadRelatedAsync(product, e => e.Devices);
+            await Repository.LoadRelatedAsync(product, e => e.Name);
+
+            product = (await Repository.IncludeRelatedAsync(e => e.Devices!, e => e.Name)).Where(e => e.Id == Guid.NewGuid()).First();
+
+            return product;
         }
     }
 }

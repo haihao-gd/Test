@@ -11,27 +11,31 @@ using ZeroStack.DeviceCenter.Domain.UnitOfWork;
 
 namespace ZeroStack.DeviceCenter.Domain.Repositories
 {
-    public interface IRepository<TEntity> where TEntity : BaseEntity
+    public partial interface IRepository<TEntity> where TEntity : BaseEntity
     {
         Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
+
+        Task InsertManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default);
 
         Task DeleteAsync([NotNull] TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
 
         Task DeleteAsync([NotNull] Expression<Func<TEntity, bool>> predicate, bool autoSave = false, CancellationToken cancellationToken = default);
 
+        Task DeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default);
+
         Task<TEntity> UpdateAsync([NotNull] TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
 
-        Task<List<TEntity>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = default);
+        Task UpdateManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default);
+
+        Task<List<TEntity>> GetListAsync(bool includeRelated = false, CancellationToken cancellationToken = default);
 
         Task<long> GetCountAsync(CancellationToken cancellationToken = default);
 
-        Task<List<TEntity>> GetListAsync(int pageNumber, int pageSize, Expression<Func<TEntity, object>> sorting, bool includeDetails = false, CancellationToken cancellationToken = default);
+        Task<List<TEntity>> GetListAsync(int pageNumber, int pageSize, Expression<Func<TEntity, object>> sorting, bool includeRelated = false, CancellationToken cancellationToken = default);
 
-        IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors);
+        Task<TEntity?> FindAsync([NotNull] Expression<Func<TEntity, bool>> predicate, bool includeRelated = true, CancellationToken cancellationToken = default);
 
-        Task<TEntity?> FindAsync([NotNull] Expression<Func<TEntity, bool>> predicate, bool includeDetails = true, CancellationToken cancellationToken = default);
-
-        Task<TEntity> GetAsync([NotNull] Expression<Func<TEntity, bool>> predicate, bool includeDetails = true, CancellationToken cancellationToken = default);
+        Task<TEntity> GetAsync([NotNull] Expression<Func<TEntity, bool>> predicate, bool includeRelated = true, CancellationToken cancellationToken = default);
 
         Task<List<TEntity>> GetListAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
 
@@ -54,8 +58,10 @@ namespace ZeroStack.DeviceCenter.Domain.Repositories
     {
         Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default);
 
-        Task<TEntity> GetAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
+        Task<TEntity> GetAsync(TKey id, bool includeRelated = true, CancellationToken cancellationToken = default);
 
-        Task<TEntity?> FindAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
+        Task<TEntity?> FindAsync(TKey id, bool includeRelated = true, CancellationToken cancellationToken = default);
+
+        Task DeleteManyAsync(IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default);
     }
 }
