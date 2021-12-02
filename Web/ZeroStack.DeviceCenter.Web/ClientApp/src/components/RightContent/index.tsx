@@ -1,14 +1,14 @@
 import { Space } from 'antd';
-import { CloudSyncOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { CloudSyncOutlined } from '@ant-design/icons';
 import React from 'react';
 import { useModel, SelectLang } from 'umi';
 import Avatar from './AvatarDropdown';
-import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 
 export type SiderTheme = 'light' | 'dark';
 
 const GlobalHeaderRight: React.FC = () => {
+
   const { initialState } = useModel('@@initialState');
 
   if (!initialState || !initialState.settings) {
