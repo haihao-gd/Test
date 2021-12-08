@@ -90,9 +90,9 @@ namespace ZeroStack.DeviceCenter.API
 
             app.UseRouting();
 
-            app.UseAuthentication().UseAuthorization();
-
+            app.UseAuthentication();
             app.UseTenantMiddleware();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -14,7 +14,7 @@ import { Button, Drawer, message, Tooltip } from "antd";
 import moment from "moment";
 import { useRef, useState } from "react";
 import UpdateForm from "./components/UpdateForm";
-import { await } from "@umijs/deps/compiled/signale";
+import { useAccess, Access } from 'umi';
 
 export default () => {
 
@@ -29,6 +29,8 @@ export default () => {
     const createFormRef = useRef<FormInstance>();
 
     const [selectedRows, setSelectedRows] = useState<API.ProductGetResponseModel[]>([]);
+
+    const access = useAccess();
 
     const columns: ProColumns<API.ProductGetResponseModel>[] = [
         {
@@ -76,27 +78,31 @@ export default () => {
             dataIndex: 'option',
             valueType: 'option',
             render: (dom: any, entity: API.ProductGetResponseModel) => [
-                <a key={entity.id}
-                    onClick={() => {
-                        setUpdateVisible(true);
-                        setCurrentRow(entity);
-                    }}>编辑</a>,
-                <Popconfirm
-                    title="确定要删除此项吗？"
-                    onConfirm={async () => {
-                        const hide = message.loading('正在删除中...');
-                        if (entity.id) {
-                            await deleteProduct({ id: entity.id });
-                            hide();
-                            message.success('删除产品成功。');
-                            tableActionRef.current?.reload();
-                        }
-                    }}
-                    okText="是"
-                    cancelText="否"
-                >
-                    <a href="#">删除</a>
-                </Popconfirm>
+                <Access accessible={access['ProductManager.Products.Edit']}>
+                    <a key={entity.id}
+                        onClick={() => {
+                            setUpdateVisible(true);
+                            setCurrentRow(entity);
+                        }}>编辑</a>
+                </Access>,
+                <Access accessible={access['ProductManager.Products.Delete']}>
+                    <Popconfirm
+                        title="确定要删除此项吗？"
+                        onConfirm={async () => {
+                            const hide = message.loading('正在删除中...');
+                            if (entity.id) {
+                                await deleteProduct({ id: entity.id });
+                                hide();
+                                message.success('删除产品成功。');
+                                tableActionRef.current?.reload();
+                            }
+                        }}
+                        okText="是"
+                        cancelText="否"
+                    >
+                        <a href="#">删除</a>
+                    </Popconfirm>
+                </Access>
             ]
         }
     ]
@@ -129,43 +135,44 @@ export default () => {
                 rowKey='id'
                 actionRef={tableActionRef}
                 headerTitle={
-                    <ModalForm<API.ProductCreateOrUpdateRequestModel>
-                        title="创建产品"
-                        formRef={createFormRef}
-                        trigger={<Button type="primary">
-                            <PlusOutlined />
-                            创建产品
-                        </Button>}
-                        modalProps={{
-                            onCancel: () => console.log('run'),
-                        }}
-                        onFinish={async (values) => {
+                    <Access accessible={access['ProductManager.Products.Create']} fallback={false} >
+                        <ModalForm<API.ProductCreateOrUpdateRequestModel>
+                            title="创建产品"
+                            formRef={createFormRef}
+                            trigger={<Button type="primary">
+                                <PlusOutlined />
+                                创建产品
+                            </Button>}
+                            modalProps={{
+                                onCancel: () => console.log('run'),
+                            }}
+                            onFinish={async (values) => {
 
-                            values.creationTime = moment(values.creationTime).toISOString();
-                            const result = await postProduct(values);
-                            if (result) {
-                                message.success('创建产品成功。');
-                                createFormRef.current?.resetFields();
-                                tableActionRef.current?.reload();
-                                return true;
-                            }
-                            else {
-                                message.error('创建产品失败。');
-                                return false;
-                            }
-                        }}
-                    >
-                        <ProFormText name="name" label="产品名称" rules={[{
-                            type: "string",
-                            required: true,
-                            min: 3,
-                            max: 15,
-                        }]} />
-                        <ProFormDateTimePicker name="creationTime" label="创建时间" rules={[{
-                            required: true,
-                        }]} />
-                    </ModalForm>
-
+                                values.creationTime = moment(values.creationTime).toISOString();
+                                const result = await postProduct(values);
+                                if (result) {
+                                    message.success('创建产品成功。');
+                                    createFormRef.current?.resetFields();
+                                    tableActionRef.current?.reload();
+                                    return true;
+                                }
+                                else {
+                                    message.error('创建产品失败。');
+                                    return false;
+                                }
+                            }}
+                        >
+                            <ProFormText name="name" label="产品名称" rules={[{
+                                type: "string",
+                                required: true,
+                                min: 3,
+                                max: 15,
+                            }]} />
+                            <ProFormDateTimePicker name="creationTime" label="创建时间" rules={[{
+                                required: true,
+                            }]} />
+                        </ModalForm>
+                    </Access>
                 }
                 options={{ fullScreen: true, search: false, }}
                 toolbar={{

@@ -57,7 +57,7 @@ namespace ZeroStack.DeviceCenter.Application
         private static IServiceCollection AddAuthorization(this IServiceCollection services)
         {
             services.AddDistributedMemoryCache().AddTransient<IPermissionStore, PermissionStore>();
-            services.AddSingleton<IPermissionDefinitionManager, PermissionDefinitionManager>();
+            services.AddTransient<IPermissionDefinitionManager, PermissionDefinitionManager>();
 
             var exportedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.ExportedTypes).Where(t => t.IsClass);
 

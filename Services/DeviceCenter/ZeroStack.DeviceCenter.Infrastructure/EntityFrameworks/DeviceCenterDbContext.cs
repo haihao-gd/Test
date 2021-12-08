@@ -25,11 +25,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
             {
                 if (entityType.ClrType.IsAssignableTo(typeof(IMultiTenant)))
                 {
-                    ICurrentTenant? currentTenant = this.GetInfrastructure().GetService<ICurrentTenant>();
-                    if (currentTenant is not null)
-                    {
-                        modelBuilder.Entity(entityType.ClrType).AddQueryFilter<IMultiTenant>(e => e.TenantId == currentTenant.Id);
-                    }
+                    modelBuilder.Entity(entityType.ClrType).AddQueryFilter<IMultiTenant>(e => e.TenantId == this.GetService<ICurrentTenant>().Id);
                 }
 
                 if (entityType.ClrType.IsAssignableTo(typeof(ISoftDelete)))
