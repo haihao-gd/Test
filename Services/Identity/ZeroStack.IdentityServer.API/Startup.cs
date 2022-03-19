@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ZeroStack.IdentityServer.API.Infrastructure.Aliyun;
+using ZeroStack.IdentityServer.API.Infrastructure.Authentication.Microsoft;
 using ZeroStack.IdentityServer.API.Infrastructure.Tenants;
 using ZeroStack.IdentityServer.API.Models;
 using ZeroStack.IdentityServer.API.Services;
@@ -103,7 +104,7 @@ namespace ZeroStack.IdentityServer.API
                 weiboOptions.UserEmailsEndpoint = string.Empty;
                 weiboOptions.RemoteAuthenticationTimeout = TimeSpan.FromDays(15);
                 weiboOptions.CorrelationCookie.SameSite = SameSiteMode.Lax;
-            }).AddWeChat("WeChat", "н╒пе", weChatOptions =>
+            }).AddWeixin("WeChat", "н╒пе", weChatOptions =>
             {
                 weChatOptions.ClientId = Configuration["Authentication:WeChat:AppID"];
                 weChatOptions.ClientSecret = Configuration["Authentication:WeChat:AppSecret"];

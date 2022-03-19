@@ -69,12 +69,12 @@ namespace ZeroStack.DeviceCenter.Domain.Repositories
             return repository.AsyncExecuter.FirstAsync(repository.Query, predicate, cancellationToken);
         }
 
-        public static Task<T> FirstOrDefaultAsync<T>([NotNull] this IRepository<T> repository, CancellationToken cancellationToken = default) where T : BaseEntity
+        public static Task<T?> FirstOrDefaultAsync<T>([NotNull] this IRepository<T> repository, CancellationToken cancellationToken = default) where T : BaseEntity
         {
             return repository.AsyncExecuter.FirstOrDefaultAsync(repository.Query, cancellationToken);
         }
 
-        public static Task<T> FirstOrDefaultAsync<T>([NotNull] this IRepository<T> repository, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : BaseEntity
+        public static Task<T?> FirstOrDefaultAsync<T>([NotNull] this IRepository<T> repository, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : BaseEntity
         {
             return repository.AsyncExecuter.FirstOrDefaultAsync(repository.Query, predicate, cancellationToken);
         }
@@ -93,12 +93,12 @@ namespace ZeroStack.DeviceCenter.Domain.Repositories
             return repository.AsyncExecuter.LastAsync(repository.Query, predicate, cancellationToken);
         }
 
-        public static Task<T> LastOrDefaultAsync<T>([NotNull] this IRepository<T> repository, CancellationToken cancellationToken = default) where T : BaseEntity
+        public static Task<T?> LastOrDefaultAsync<T>([NotNull] this IRepository<T> repository, CancellationToken cancellationToken = default) where T : BaseEntity
         {
             return repository.AsyncExecuter.LastOrDefaultAsync(repository.Query, cancellationToken);
         }
 
-        public static Task<T> LastOrDefaultAsync<T>([NotNull] this IRepository<T> repository, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : BaseEntity
+        public static Task<T?> LastOrDefaultAsync<T>([NotNull] this IRepository<T> repository, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : BaseEntity
         {
             return repository.AsyncExecuter.LastOrDefaultAsync(repository.Query, predicate, cancellationToken);
         }
@@ -117,12 +117,12 @@ namespace ZeroStack.DeviceCenter.Domain.Repositories
             return repository.AsyncExecuter.SingleAsync(repository.Query, predicate, cancellationToken);
         }
 
-        public static Task<T> SingleOrDefaultAsync<T>([NotNull] this IRepository<T> repository, CancellationToken cancellationToken = default) where T : BaseEntity
+        public static Task<T?> SingleOrDefaultAsync<T>([NotNull] this IRepository<T> repository, CancellationToken cancellationToken = default) where T : BaseEntity
         {
             return repository.AsyncExecuter.SingleOrDefaultAsync(repository.Query, cancellationToken);
         }
 
-        public static Task<T> SingleOrDefaultAsync<T>([NotNull] this IRepository<T> repository, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : BaseEntity
+        public static Task<T?> SingleOrDefaultAsync<T>([NotNull] this IRepository<T> repository, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : BaseEntity
         {
             return repository.AsyncExecuter.SingleOrDefaultAsync(repository.Query, predicate, cancellationToken);
         }

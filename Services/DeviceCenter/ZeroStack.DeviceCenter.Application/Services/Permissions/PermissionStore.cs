@@ -66,17 +66,17 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
         {
             var cacheKey = string.Format(CacheKeyFormat, providerName, providerKey, name);
 
-            _logger.LogDebug($"PermissionStore.GetCacheItemAsync: {cacheKey}");
+            _logger.LogDebug("PermissionStore.GetCacheItemAsync: {cacheKey}", cacheKey);
 
             string cacheItem = await _distributedCache.GetStringAsync(cacheKey);
 
             if (cacheItem is not null)
             {
-                _logger.LogDebug($"Found in the cache: {cacheKey}");
+                _logger.LogDebug("Found in the cache: {cacheKey}",cacheKey);
                 return (cacheKey, Convert.ToBoolean(cacheItem));
             }
 
-            _logger.LogDebug($"Not found in the cache: {cacheKey}");
+            _logger.LogDebug("Not found in the cache: {cacheKey}",cacheKey);
 
             return await SetCacheItemsAsync(providerName, providerKey, name);
         }
@@ -85,11 +85,11 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
         {
             var permissions = _permissionDefinitionManager.GetPermissions();
 
-            _logger.LogDebug($"Getting all granted permissions from the repository for this provider name,key: {providerName},{providerKey}");
+            _logger.LogDebug("Getting all granted permissions from the repository for this provider name,key: {providerName},{providerKey}", providerName, providerKey);
 
             var grantedPermissionsHashSet = new HashSet<string>((await _repository.GetListAsync(providerName, providerKey)).Select(p => p.Name));
 
-            _logger.LogDebug($"Setting the cache items. Count: {permissions.Count}");
+            _logger.LogDebug("Setting the cache items. Count: {permissionsCount}", permissions.Count);
 
             var cacheItems = new List<(string Key, bool IsGranted)>();
 
@@ -116,7 +116,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
             await Task.WhenAll(setCacheItemTasks);
 
-            _logger.LogDebug($"Finished setting the cache items. Count: {permissions.Count}");
+            _logger.LogDebug("Finished setting the cache items. Count: {permissionsCount}", permissions.Count);
 
             return (string.Format(CacheKeyFormat, providerName, providerKey, currentName), currentResult);
         }
@@ -125,7 +125,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
         {
             var cacheKeys = names.Select(x => string.Format(CacheKeyFormat, providerName, providerKey, x)).ToList();
 
-            _logger.LogDebug($"PermissionStore.GetCacheItemAsync: {string.Join(",", cacheKeys)}");
+            _logger.LogDebug("PermissionStore.GetCacheItemAsync: {keys}", string.Join(",", cacheKeys));
 
             List<Task<(string key, string value)>> getCacheItemTasks = new();
 
@@ -138,13 +138,13 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
             if (cacheItems.All(x => x.value is not null))
             {
-                _logger.LogDebug($"Found in the cache: {string.Join(",", cacheKeys)}");
+                _logger.LogDebug("Found in the cache: {keys}", string.Join(",", cacheKeys));
                 return Array.ConvertAll(cacheItems, i => (i.key, Convert.ToBoolean(i.value))).ToList();
             }
 
             var notCacheKeys = cacheItems.Where(x => x.value is null).Select(x => x.key).ToList();
 
-            _logger.LogDebug($"Not found in the cache: {string.Join(",", notCacheKeys)}");
+            _logger.LogDebug("Not found in the cache: {keys}", string.Join(",", notCacheKeys));
 
             return await SetCacheItemsAsync(providerName, providerKey, notCacheKeys);
         }
@@ -153,11 +153,11 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
         {
             var permissions = _permissionDefinitionManager.GetPermissions().Where(x => notCacheKeys.Any(k => GetPermissionInfoFormCacheKey(k).Name == x.Name)).ToList();
 
-            _logger.LogDebug($"Getting not cache granted permissions from the repository for this provider name,key: {providerName},{providerKey}");
+            _logger.LogDebug("Getting not cache granted permissions from the repository for this provider name,key: {providerName},{providerKey}", providerName, providerKey);
 
             var grantedPermissionsHashSet = new HashSet<string>((await _repository.GetListAsync(notCacheKeys.Select(k => GetPermissionInfoFormCacheKey(k).Name).ToArray(), providerName, providerKey)).Select(p => p.Name));
 
-            _logger.LogDebug($"Setting the cache items. Count: {permissions.Count}");
+            _logger.LogDebug("Setting the cache items. Count: {permissionsCount}", permissions.Count);
 
             List<(string Key, bool IsGranted)>? cacheItems = new();
 
@@ -176,7 +176,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
 
             await Task.WhenAll(setCacheItemTasks);
 
-            _logger.LogDebug($"Finished setting the cache items. Count: {permissions.Count}");
+            _logger.LogDebug("Finished setting the cache items. Count: {permissionsCount}", permissions.Count);
 
             return cacheItems;
         }

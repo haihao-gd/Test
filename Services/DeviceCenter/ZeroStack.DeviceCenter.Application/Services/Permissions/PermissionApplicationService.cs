@@ -60,7 +60,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
                             throw new ApplicationException($"The permission named {permission.Name} is disabled");
                         }
 
-                        PermissionGrant permissionGrant = await _permissionGrantRepository.FindAsync(permission.Name, providerName, providerKey);
+                        PermissionGrant? permissionGrant = await _permissionGrantRepository.FindAsync(permission.Name, providerName, providerKey);
 
                         permissionGrantModel.IsGranted = permissionGrant != null;
 
@@ -93,7 +93,7 @@ namespace ZeroStack.DeviceCenter.Application.Services.Permissions
                     throw new ApplicationException($"The permission named {permission.Name} is disabled");
                 }
 
-                PermissionGrant permissionGrant = await _permissionGrantRepository.FindAsync(requestModel.Name, providerName, providerKey);
+                PermissionGrant? permissionGrant = await _permissionGrantRepository.FindAsync(requestModel.Name, providerName, providerKey);
 
                 if (requestModel.IsGranted && permissionGrant is null)
                 {

@@ -1,5 +1,5 @@
-﻿using IdentityServer4.AspNetIdentity;
-using IdentityServer4.Models;
+﻿using Duende.IdentityServer.AspNetIdentity;
+using Duende.IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;

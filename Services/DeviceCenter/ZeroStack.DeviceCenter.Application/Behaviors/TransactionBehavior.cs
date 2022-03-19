@@ -8,7 +8,7 @@ using ZeroStack.EventBus.Extensions;
 
 namespace ZeroStack.DeviceCenter.Application.Behaviors
 {
-    public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+    public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         private readonly ILogger<TransactionBehavior<TRequest, TResponse>> _logger;
 

@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "首页";
-    var version = FileVersionInfo.GetVersionInfo(typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.Location).ProductVersion!.Split('+').First();
+    var version = FileVersionInfo.GetVersionInfo(typeof(Duende.IdentityServer.Hosting.IdentityServerMiddleware).Assembly.Location).ProductVersion!.Split('+').First();
 }
 <div class="jumbotron mt-3">
     <h1 class="display-4">您好, 世界！</h1>

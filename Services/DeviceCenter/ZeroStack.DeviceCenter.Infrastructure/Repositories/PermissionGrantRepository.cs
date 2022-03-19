@@ -13,7 +13,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Repositories
     {
         public PermissionGrantRepository(DeviceCenterDbContext dbContext) : base(dbContext) { }
 
-        public async Task<PermissionGrant> FindAsync(string name, string providerName, string providerKey, CancellationToken cancellationToken = default)
+        public async Task<PermissionGrant?> FindAsync(string name, string providerName, string providerKey, CancellationToken cancellationToken = default)
         {
             return await DbSet.OrderBy(x => x.Id).FirstOrDefaultAsync(s => s.Name == name && s.ProviderName == providerName && s.ProviderKey == providerKey, cancellationToken);
         }

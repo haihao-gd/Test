@@ -188,7 +188,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
             }
         }
 
-        public virtual async Task<IQueryable<TEntity>> IncludeRelatedAsync(params Expression<Func<TEntity, object>>[] propertySelectors)
+        public virtual async Task<IQueryable<TEntity>> IncludeRelatedAsync(params Expression<Func<TEntity, object?>>[] propertySelectors)
         {
             var includes = _dbContext.GetService<IOptions<IncludeRelatedPropertiesOptions>>().Value;
 
@@ -196,10 +196,10 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
 
             if (propertySelectors is not null)
             {
-                propertySelectors.ToList().ForEach(propertySelector =>
+                foreach (var propertySelector in propertySelectors)
                 {
                     query = query.Include(propertySelector);
-                });
+                }
             }
             else
             {
@@ -208,8 +208,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks
 
             return await Task.FromResult(query);
         }
-
-        public virtual async Task LoadRelatedAsync<TProperty>(TEntity entity, Expression<Func<TEntity, IEnumerable<TProperty>?>> propertyExpression, CancellationToken cancellationToken = default) where TProperty : class
+        public virtual async Task LoadRelatedAsync<TProperty>(TEntity entity, Expression<Func<TEntity, IEnumerable<TProperty>>> propertyExpression, CancellationToken cancellationToken = default) where TProperty : class
         {
             await _dbContext.Entry(entity).Collection(propertyExpression).LoadAsync(cancellationToken);
         }

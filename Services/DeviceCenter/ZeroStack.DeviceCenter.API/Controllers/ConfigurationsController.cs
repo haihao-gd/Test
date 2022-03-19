@@ -22,30 +22,24 @@ namespace ZeroStack.DeviceCenter.API.Controllers
     {
         private readonly ILogger<ConfigurationsController> _logger;
         private readonly AuthorizationOptions _authorizationOptions;
-        private readonly RequestLocalizationOptions _requestLocalizationOptions;
         private readonly IPermissionDefinitionManager _permissionDefinitionManager;
         private readonly IPermissionChecker _permissionChecker;
         private readonly IAuthorizationService _authorizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IStringLocalizerFactory _stringLocalizerFactory;
 
         public ConfigurationsController(ILogger<ConfigurationsController> logger,
           IHttpContextAccessor httpContextAccessor,
           IOptions<AuthorizationOptions> authorizationOptions,
-          IOptions<RequestLocalizationOptions> requestLocalizationOptions,
           IPermissionDefinitionManager permissionDefinitionManager,
           IPermissionChecker permissionChecker,
-          IAuthorizationService authorizationService,
-          IStringLocalizerFactory stringLocalizerFactory)
+          IAuthorizationService authorizationService)
         {
             _logger = logger ?? NullLogger<ConfigurationsController>.Instance;
             _httpContextAccessor = httpContextAccessor;
             _authorizationOptions = authorizationOptions.Value;
-            _requestLocalizationOptions = requestLocalizationOptions.Value;
             _permissionDefinitionManager = permissionDefinitionManager;
             _permissionChecker = permissionChecker;
             _authorizationService = authorizationService;
-            _stringLocalizerFactory = stringLocalizerFactory;
         }
 
 

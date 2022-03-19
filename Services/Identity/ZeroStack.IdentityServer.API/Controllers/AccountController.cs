@@ -1,8 +1,8 @@
 ﻿using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Extensions;
-using IdentityServer4.Models;
-using IdentityServer4.Services;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Extensions;
+using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +32,9 @@ namespace ZeroStack.IdentityServer.API.Controllers
         private readonly IDistributedCache _distributedCache;
         private readonly ISmsSender _smsSender;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILoggerFactory loggerFactory, IIdentityServerInteractionService interactionService, ApplicationDbContext dbContext, IStringLocalizerFactory localizerFactory, IDistributedCache distributedCache, ISmsSender smsSender)
+        private readonly IAuthenticationHandlerProvider _authenticationHandlerProvider;
+
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILoggerFactory loggerFactory, IIdentityServerInteractionService interactionService, ApplicationDbContext dbContext, IStringLocalizerFactory localizerFactory, IDistributedCache distributedCache, ISmsSender smsSender, IAuthenticationHandlerProvider authenticationHandlerProvider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -42,6 +44,7 @@ namespace ZeroStack.IdentityServer.API.Controllers
             _localizerFactory = localizerFactory;
             _distributedCache = distributedCache;
             _smsSender = smsSender;
+            _authenticationHandlerProvider = authenticationHandlerProvider;
         }
 
         [HttpGet]
@@ -90,7 +93,7 @@ namespace ZeroStack.IdentityServer.API.Controllers
                     // make sure the returnUrl is still valid, and if yes - redirect back to authorize endpoint
                     if (_interactionService.IsValidReturnUrl(returnUrl))
                     {
-                        return Redirect(returnUrl);
+                        return Redirect(returnUrl ?? string.Empty);
                     }
 
                     return RedirectToLocal(returnUrl!);
@@ -214,9 +217,9 @@ namespace ZeroStack.IdentityServer.API.Controllers
                     model.LogoutId = await _interactionService.CreateLogoutContextAsync();
                 }
 
-                string url = Url.Action("Logout", new { model.LogoutId });
+                string? url = Url.Action("Logout", new { model.LogoutId });
 
-                if (await HttpContext.GetSchemeSupportsSignOutAsync(idp))
+                if (await _authenticationHandlerProvider.GetHandlerAsync(HttpContext, idp) is IAuthenticationSignOutHandler)
                 {
                     // hack: try/catch to handle social providers that throw
                     await HttpContext.SignOutAsync(idp, new AuthenticationProperties { RedirectUri = url });
@@ -234,7 +237,7 @@ namespace ZeroStack.IdentityServer.API.Controllers
             // get context information (client name, post logout redirect URI and iframe for federated signout)
             LogoutRequest logoutRequest = await _interactionService.GetLogoutContextAsync(model.LogoutId);
 
-            return logoutRequest?.PostLogoutRedirectUri is null ? RedirectToLocal(null) : Redirect(logoutRequest?.PostLogoutRedirectUri);
+            return logoutRequest?.PostLogoutRedirectUri is null ? RedirectToLocal(null) : Redirect(logoutRequest?.PostLogoutRedirectUri ?? string.Empty);
         }
 
         [HttpGet]

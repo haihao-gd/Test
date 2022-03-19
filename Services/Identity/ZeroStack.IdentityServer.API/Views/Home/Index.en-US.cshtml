@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "HomePage";
-    var version = FileVersionInfo.GetVersionInfo(typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.Location).ProductVersion!.Split('+').First();
+    var version = FileVersionInfo.GetVersionInfo(typeof(Duende.IdentityServer.Hosting.IdentityServerMiddleware).Assembly.Location).ProductVersion!.Split('+').First();
 }
 <div class="jumbotron mt-3">
     <h1 class="display-4">Hello, world!</h1>

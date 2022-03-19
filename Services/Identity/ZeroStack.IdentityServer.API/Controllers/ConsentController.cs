@@ -1,6 +1,6 @@
-﻿using IdentityServer4.Models;
-using IdentityServer4.Services;
-using IdentityServer4.Validation;
+﻿using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Services;
+using Duende.IdentityServer.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -121,7 +121,7 @@ namespace ZeroStack.IdentityServer.API.Controllers
             }
             else
             {
-                _logger.LogError("No consent request matching request: {0}", returnUrl);
+                _logger.LogError("No consent request matching request: {returnUrl}", returnUrl);
             }
 
             return null;
@@ -159,7 +159,7 @@ namespace ZeroStack.IdentityServer.API.Controllers
             }
             if (request.ValidatedResources.Resources.OfflineAccess)
             {
-                scopeViewModels.Add(GetOfflineAccessScope(consentViewModel.ScopesConsented.Contains(IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
+                scopeViewModels.Add(GetOfflineAccessScope(consentViewModel.ScopesConsented.Contains(Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
             }
             consentViewModel.ApiScopes = scopeViewModels;
 
@@ -203,7 +203,7 @@ namespace ZeroStack.IdentityServer.API.Controllers
         {
             return new ScopeViewModel
             {
-                Value = IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess,
+                Value = Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess,
                 DisplayName = "Offline Access",
                 Description = "Access to your applications and resources, even when you are offline",
                 Emphasize = true,

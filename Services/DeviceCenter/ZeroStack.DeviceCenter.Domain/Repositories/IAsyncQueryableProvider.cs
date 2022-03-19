@@ -44,9 +44,9 @@ namespace ZeroStack.DeviceCenter.Domain.Repositories
 
         Task<T> FirstAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
-        Task<T> FirstOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, CancellationToken cancellationToken = default);
+        Task<T?> FirstOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, CancellationToken cancellationToken = default);
 
-        Task<T> FirstOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+        Task<T?> FirstOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
         #endregion
 
@@ -56,9 +56,9 @@ namespace ZeroStack.DeviceCenter.Domain.Repositories
 
         Task<T> LastAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
-        Task<T> LastOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, CancellationToken cancellationToken = default);
+        Task<T?> LastOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, CancellationToken cancellationToken = default);
 
-        Task<T> LastOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+        Task<T?> LastOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
         #endregion
 
@@ -68,9 +68,9 @@ namespace ZeroStack.DeviceCenter.Domain.Repositories
 
         Task<T> SingleAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
-        Task<T> SingleOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, CancellationToken cancellationToken = default);
+        Task<T?> SingleOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, CancellationToken cancellationToken = default);
 
-        Task<T> SingleOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+        Task<T?> SingleOrDefaultAsync<T>([NotNull] IQueryable<T> queryable, [NotNull] Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
         #endregion
 

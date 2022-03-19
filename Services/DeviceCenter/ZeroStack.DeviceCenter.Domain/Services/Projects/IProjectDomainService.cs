@@ -25,6 +25,6 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Projects
 
         Task<Project> FirstAsync(Expression<Func<Project, bool>> where, CancellationToken cancellationToken = default);
 
-        Task<Project> FirstOrDefaultAsync(Expression<Func<Project, bool>> where, CancellationToken cancellationToken = default);
+        Task<Project?> FirstOrDefaultAsync(Expression<Func<Project, bool>> where, CancellationToken cancellationToken = default);
     }
 }

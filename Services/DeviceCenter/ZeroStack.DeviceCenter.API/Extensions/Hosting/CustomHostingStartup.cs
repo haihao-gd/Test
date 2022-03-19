@@ -16,12 +16,11 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices(services =>
+            builder.ConfigureServices((context, services) =>
             {
-                var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
-                services.AddDomainLayer().AddInfrastructureLayer(configuration).AddApplicationLayer().AddWebApiLayer();
+                services.AddDomainLayer().AddInfrastructureLayer(context.Configuration).AddApplicationLayer().AddWebApiLayer();
 
-                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Add(nameof(ClaimTypes.Name).ToLower(), ClaimTypes.Name);
+                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.TryAdd(nameof(ClaimTypes.Name).ToLower(), ClaimTypes.Name);
 
                 services.AddAuthentication(options =>
                 {
@@ -30,13 +29,13 @@ namespace ZeroStack.DeviceCenter.API.Extensions.Hosting
 
                 }).AddJwtBearer(options =>
                 {
-                    options.Authority = configuration.GetValue<string>("IdentityServer:AuthorizationUrl");
+                    options.Authority = context.Configuration.GetValue<string>("IdentityServer:AuthorizationUrl");
                     options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters.ValidateAudience = false;
                     options.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
                 });
 
-                services.Configure<TenantStoreOptions>(configuration);
+                services.Configure<TenantStoreOptions>(context.Configuration);
 
                 services.Configure<Microsoft.AspNetCore.Mvc.MvcOptions>(options =>
                 {

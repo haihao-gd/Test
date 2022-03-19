@@ -43,7 +43,7 @@ namespace ZeroStack.DeviceCenter.Domain.Services.Projects
             return await _projectRepository.FirstAsync(where, cancellationToken);
         }
 
-        public async Task<Project> FirstOrDefaultAsync(Expression<Func<Project, bool>> where, CancellationToken cancellationToken = default)
+        public async Task<Project?> FirstOrDefaultAsync(Expression<Func<Project, bool>> where, CancellationToken cancellationToken = default)
         {
             return await _projectRepository.FirstOrDefaultAsync(where, cancellationToken);
         }

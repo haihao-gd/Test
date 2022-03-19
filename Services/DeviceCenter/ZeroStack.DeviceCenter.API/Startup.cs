@@ -37,7 +37,15 @@ namespace ZeroStack.DeviceCenter.API
 
                 c.OperationFilter<CamelCaseNamingOperationFilter>();
 
-                c.CustomOperationIds(api => $"{System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(api.ActionDescriptor.RouteValues["action"])}");
+                c.CustomOperationIds(api =>
+                {
+                    string? actionName = api.ActionDescriptor.RouteValues["action"];
+                    if (actionName is not null)
+                    {
+                        return $"{System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(actionName)}";
+                    }
+                    return api.ActionDescriptor.Id;
+                });
 
                 string identityServer = Configuration.GetValue<string>("IdentityServer:AuthorizationUrl");
 
@@ -66,7 +74,7 @@ namespace ZeroStack.DeviceCenter.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(WebApplication app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -94,10 +102,7 @@ namespace ZeroStack.DeviceCenter.API
             app.UseTenantMiddleware();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.MapControllers();
         }
     }
 }

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZeroStack.DeviceCenter.Infrastructure.EntityFrameworks;
 
+#nullable disable
+
 namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 {
     [DbContext(typeof(DeviceCenterDbContext))]
@@ -15,9 +17,10 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.PermissionAggregate.PermissionGrant", b =>
                 {
@@ -45,15 +48,16 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                     b.HasIndex("Name", "ProviderName", "ProviderKey");
 
-                    b.ToTable("PermissionGrants");
+                    b.ToTable("PermissionGrants", (string)null);
                 });
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.Device", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Coordinate")
                         .IsRequired()
@@ -79,15 +83,16 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Devices");
+                    b.ToTable("Devices", (string)null);
                 });
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.DeviceTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("DeviceId")
                         .HasColumnType("int");
@@ -101,7 +106,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("DeviceTags");
+                    b.ToTable("DeviceTags", (string)null);
                 });
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.Product", b =>
@@ -133,15 +138,16 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTimeOffset>("CreationTime")
                         .HasColumnType("datetimeoffset");
@@ -153,15 +159,16 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProjectAggregate.ProjectGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTimeOffset>("CreationTime")
                         .HasColumnType("datetimeoffset");
@@ -190,7 +197,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectGroups");
+                    b.ToTable("ProjectGroups", (string)null);
                 });
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Infrastructure.Idempotency.ClientRequest", b =>
@@ -207,7 +214,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Idempotency");
+                    b.ToTable("Idempotency", (string)null);
                 });
 
             modelBuilder.Entity("ZeroStack.DeviceCenter.Domain.Aggregates.ProductAggregate.Device", b =>
@@ -245,7 +252,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure.Migrations
 
                             b1.HasKey("DeviceId");
 
-                            b1.ToTable("DeviceAddresses");
+                            b1.ToTable("DeviceAddresses", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("DeviceId");

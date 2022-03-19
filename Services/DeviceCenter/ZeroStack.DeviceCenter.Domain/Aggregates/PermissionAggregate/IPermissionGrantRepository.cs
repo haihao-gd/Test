@@ -8,7 +8,7 @@ namespace ZeroStack.DeviceCenter.Domain.Aggregates.PermissionAggregate
 {
     public interface IPermissionGrantRepository : IRepository<PermissionGrant, Guid>
     {
-        Task<PermissionGrant> FindAsync(string name, string providerName, string providerKey, CancellationToken cancellationToken = default);
+        Task<PermissionGrant?> FindAsync(string name, string providerName, string providerKey, CancellationToken cancellationToken = default);
 
         Task<List<PermissionGrant>> GetListAsync(string providerName, string providerKey, CancellationToken cancellationToken = default);
 

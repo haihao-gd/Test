@@ -67,7 +67,7 @@ namespace ZeroStack.DeviceCenter.Infrastructure
 
             services.Configure<IncludeRelatedPropertiesOptions>(options =>
             {
-                options.ConfigIncludes<Product>(e => e.Include(e => e.Devices).ThenInclude(e => e.Address));
+                //options.ConfigIncludes<Product>(e => e.Include(e => e.Devices).ThenInclude(e => e.Address));
             });
 
             return services;
